@@ -106,7 +106,6 @@
         "leaf": true,
         "text": "cmpDataSetVar",
         "tagName": "cmp-data-set-var",
-        "innerHtmlToCaption": true,
         "innerHTML": "",
         "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":"{g1:random()}" },
         "propertyMandatory": {"name":"string"} ,

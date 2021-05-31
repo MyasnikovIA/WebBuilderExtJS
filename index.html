@@ -126,15 +126,14 @@
                                 split: true
                             },{
                                 xtype: 'panel',
-                                title: 'Верхняя панель',
                                 region: 'north',
                                 width: 350,
-                                height: 52,
+                                height: 28,
                                 renderTo: Ext.getBody(),
                                 dockedItems: [toolbar]
                             },{
                                 xtype: 'panel',
-                                title: 'Нижняя панель',
+                                title: '',
                                 html: 'Нижняя панель',
                                 region: 'south',
                                 height: 80,
@@ -159,6 +158,7 @@
                                                    itemclick : function(tree, record, item, index, e, options) {
                                                        var nodeText = record.data.text;
                                                        clickElement = record.data.ObjectElement;
+                                                       selectElement = record.data.ObjectElement;
                                                        if (NewObjectElement == null) {
                                                           var elementsSrc = TmpElementSrc.querySelectorAll('*');
                                                           for (var i = 0; i < elementsSrc.length; i++) {
@@ -168,13 +168,22 @@
                                                           }
                                                           clickElement.classList.add("selectElement");
                                                        } else {
-                                                          NewObjectElement
                                                           clickElement.appendChild(NewObjectElement);
                                                           selectElement = NewObjectElement;
                                                           NewObjectElement = null;
                                                           // перестроить DOM дерево
                                                           domHTMLTreeStory.getRootNode().removeAll();
                                                           domHTMLTreeStory.setRootNode(getDOMtree());
+                                                          var domTreeView = Ext.getCmp('domTreeView');
+                                                          var startNode = domTreeView.getRootNode();
+                                                          startNode.cascadeBy(function (childNode) {
+                                                             if (childNode.get('ObjectElement') == selectElement) {
+                                                                var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                                                domTreeView.getSelectionModel().select(record);
+                                                                var path = record.getPath();
+                                                                domTreeView.expandPath(path);
+                                                             }
+                                                          }, this);
                                                        }
                                                    },
                                                    itemdblclick : function(tree, record, item, index, e, options) {
@@ -356,7 +365,6 @@
                         return res;
                     }
 
-
               var ContentEditorDocume = null;
               var ContentEditorDocumeIframe = document.getElementById('TabBody');
               var NewObjectElement = null;
@@ -365,8 +373,6 @@
               var TmpElementSrc = null;
               var TmpElementSrc = null;
               ContentEditorDocumeIframe.src = "";
-
-
               ContentEditorDocumeIframe.onload = function () {
                   var styleWebBuilder = "<style DeletTag=1>"+getTextUrl("component.css")+"</style>";
                   ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
@@ -415,8 +421,6 @@
                   domHTMLTreeStory.getRootNode().removeAll();
                   domHTMLTreeStory.setRootNode(getDOMtree());
               }
-
-
               var saveWebForm = function() {
                   TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
                   clearSystemTagFromEditContent(TmpElement,"innrToCaption");
@@ -491,7 +495,6 @@
                           }
                        }
                        clickElement.classList.add("selectElement");
-
                        // Выделить элемент в дом дереве
                        var domTreeView = Ext.getCmp('domTreeView');
                        var startNode = domTreeView.getRootNode();
@@ -509,7 +512,7 @@
               var keyEvent = function(event) {
                   //console.log(event.keyCode);
                   if (event.keyCode == 27) { //esc
-                        console.log('ESC')
+                        console.log('ESC');
                   }
                   if (event.keyCode == 46) { //del
                       console.log('DEL')
@@ -535,7 +538,6 @@
                      selectElement.style.left =left+'px';
                      return;
                   }
-
                   if ((event.keyCode == 38)&&(event.ctrlKey==true)&&(selectElement!=null)) { //верх
                      var top = parseInt( selectElement.style.top );
                      top-=1;
@@ -628,8 +630,6 @@
                               }
                     }
               }
-
-
               var clearSystemTextFromEditContent = function(bodyText){
                   bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
                   bodyText = bodyText.replaceAll('class="selectElement"', '');
@@ -643,8 +643,6 @@
                   bodyText = bodyText.replaceAll('      </body>', '</body>');
                   return bodyText
               }
-
-
               var clearSystemTagFromEditContent = function(TmpSelectElement,innrToCaption){
                   var elements = TmpSelectElement.querySelectorAll('*');
                   for (var i = 0; i < elements.length; i++) {
@@ -664,16 +662,15 @@
                         keyTag+="-"+ elements[i].getAttribute("cmptype");
                      }
                      if (tagInfoList[keyTag]){
-                        if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)){
+                        if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)) {
                             elements[i].setAttribute("caption", elements[i].innerHTML);
                             elements[i].innerHTML = "";
                         }
                      }
                      if (elements[i].getAttribute){
                         if (elements[i].getAttribute("delettag")) elements[i].remove();
-                        if (elements[i].getAttribute("delettag_build_element_tree_id"))elements[i].removeAttribute("delettag_build_element_tree_id")
+                        if (elements[i].getAttribute("delettag_build_element_tree_id"))elements[i].removeAttribute("delettag_build_element_tree_id");
                      }
-
                      /*
                      for(var key in elements[i]) {
                         if (typeof elements[i][key] === 'function') continue;
@@ -701,8 +698,6 @@
                      }
                      */
                   }
-
-
                   var bodyText= TmpSelectElement.outerHTML;
                   //console.log(TmpSelectElement.outerHTML);
                   bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
@@ -715,22 +710,19 @@
                   bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
                   bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                   bodyText = bodyText.replaceAll('      </body>', '</body>');
-                  if (innrToCaption){
-                    bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
-                    bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
-                    bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
-                    bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
-                    bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
+                  if (innrToCaption) {
+                     bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
+                     bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
+                     bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
+                     bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
+                     bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
                   }
                   elements.outerHTML = bodyText;
                   return elements;
               }
-
           });
-
     </script>
 </head>
-
 <body>
 <div id="editorId" style="width:100%;height100%;position:absolute;"></div>
 </body>
