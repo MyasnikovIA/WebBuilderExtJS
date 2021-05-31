@@ -1,0 +1,14 @@
+.D3_WebBuilder_button {
+    border-radius: 5px ;
+    border: 1px solid black;
+    background-color: rgb(179,230,254);
+}
+.M2_WebBuilder_button {
+    border-radius: 5px ;
+    border: 1px solid black;
+    background-color: rgb(179,230,254);
+}
+
+.D3_WebBuilder_NotVisibleElement {
+    display:none;
+}

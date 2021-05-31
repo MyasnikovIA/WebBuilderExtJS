@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="lib/ExtJS_6.0.0/theme-classic-all.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-classic/resources/theme-classic-all.css"
+          rel="stylesheet"/>
+
+    <script type="text/javascript" src="lib/ExtJS_6.0.0/ext-all.js"></script>
+    <script type="text/javascript" src="lib/system.js"></script>
+    <script type="text/javascript">
+         // https://metanit.com/web/extjs/6.7.php
+         // https://www.w3cschool.cn/extjs/extjs_localization.html
+         var clientHeight = document.documentElement.clientHeight;
+         var clientWidth = document.documentElement.clientWidth ;
+         var componentListJson = getJsonUrl('component.json');
+         var tagInfoList={};
+         var structToArr = function( componentListJson,tagInfoList ){
+             for(var key in componentListJson){
+                if (componentListJson[key].children){
+                   for( var subKey in componentListJson[key].children){
+                      var info = componentListJson[key].children[subKey];
+                       var keyRes = info.tagName;
+                       if ( (info["property"]) && (info["property"]["cmptype"])) {
+                          keyRes+="-"+info["property"]["cmptype"];
+                       }
+                       tagInfoList[keyRes]={};
+                       if (info["property"])  tagInfoList[keyRes]["property"]=info["property"];
+                       if (info["propertyVariant"])  tagInfoList[keyRes]["propertyVariant"]=info["propertyVariant"];
+                       if (info["text"])  tagInfoList[keyRes]["text"]=info["text"];
+                       if (info["tagName"])  tagInfoList[keyRes]["tagName"]=info["tagName"];
+                       if (info["innerHtmlToCaption"])  tagInfoList[keyRes]["innerHtmlToCaption"]=info["innerHtmlToCaption"];
+                       if (info["innerHTML"])  tagInfoList[keyRes]["innerHTML"]=info["innerHTML"];
+                       if (info["parentTag"])  tagInfoList[keyRes]["parentTag"]=info["parentTag"];
+                       if (info["class"])  tagInfoList[keyRes]["class"]=info["class"];
+                   }
+                }
+             }
+         }
+         structToArr( componentListJson, tagInfoList );
+
+
+         Ext.onReady(function() {
+             var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
+
+            var propertyStory = Ext.create('Ext.data.Store', {
+                storeId:'propertyStory',
+                fields:[
+                    { name: 'key', type: 'string' },
+                    { name: 'value', type: 'string' },
+                ],
+                data:[
+                    { key: "msft",   value: '2011/04/22' },
+                    { key: "goog",   value: '2011/04/22' },
+                    { key: "apple",  value: '2011/04/22' },
+                    { key: "sencha", value: '2011/04/22' }
+                ]
+            });
+
+             var toolbar=Ext.create('Ext.toolbar.Toolbar', {
+                    dock: 'top',
+                    items: [
+                        {
+                            text: 'Кнопка'
+                        },{
+                            xtype: 'splitbutton',
+                            text : 'Кнопка с меню',
+                            menu: [
+                                {text: 'C#'},
+                                {text: 'Java'},
+                                {text: 'C++'},
+                                {text: 'Basic'}
+                            ]
+                        },{
+                            text : 'SaveToClipboard',
+                            listeners: {
+                                click: function() {
+                                    saveWebForm()
+                                }
+                            }
+                        },{
+                            text : 'Designer On/Off',
+                            listeners: {
+                                click: function() {
+                                    if (ContentEditorDocume.document.designMode == 'on' ){
+                                          ContentEditorDocume.document.designMode = 'off'
+                                    } else {
+                                          ContentEditorDocume.document.designMode = 'on'
+                                    }
+                                }
+                            }
+                        },{
+                            text : 'CopyElement',
+                            listeners: {
+                                click: function() {
+                                      if (selectElement == null) return;
+                                      var p_prime = selectElement.cloneNode(true);
+                                      var left = parseInt( selectElement.style.left );
+                                      left+=10;
+                                      p_prime.style.left = left+'px';
+                                      selectElement.after(p_prime);
+                                      selectElement = p_prime;
+                                }
+                            }
+                        }
+                        /*
+                        ,'->',{
+                            xtype    : 'textfield',
+                            name     : 'field',
+                            emptyText: 'Найти'
+                        }
+                        */
+                    ]
+             });
+
+             Ext.create('Ext.Panel', {
+                        width: clientWidth,
+                        height: clientHeight,
+                        padding: 10,
+                        layout:'border',
+                        items: [{
+                                xtype: 'panel',
+                                //title: '',
+                                html: '<iframe id="TabBody" width="100%" height="100%"></iframe>',
+                                region: 'center',
+                                margin: '5 5 5 5',
+                                split: true
+                            },{
+                                xtype: 'panel',
+                                title: 'Верхняя панель',
+                                region: 'north',
+                                width: 350,
+                                height: 52,
+                                renderTo: Ext.getBody(),
+                                dockedItems: [toolbar]
+                            },{
+                                xtype: 'panel',
+                                title: 'Нижняя панель',
+                                html: 'Нижняя панель',
+                                region: 'south',
+                                height: 80,
+                                split: true
+                            },{
+                                xtype: 'panel',
+                                title: ' ',
+                                region: 'west',
+                                width: 300,
+                                split: true,
+                                items: [  {
+                                               title: 'DOM tree',
+                                               region: 'north',
+                                               width: 350,
+                                               height: 400,
+                                               split: true,
+                                                id: 'domTreeView',
+                                               xtype: 'treepanel',
+                                               rootVisible: false,
+                                               store: domHTMLTreeStory,
+                                               listeners: {
+                                                   itemclick : function(tree, record, item, index, e, options) {
+                                                       var nodeText = record.data.text;
+                                                       clickElement = record.data.ObjectElement;
+                                                       if (NewObjectElement == null) {
+                                                          var elementsSrc = TmpElementSrc.querySelectorAll('*');
+                                                          for (var i = 0; i < elementsSrc.length; i++) {
+                                                               if (elementsSrc[i].classList.contains('selectElement')) {
+                                                                   elementsSrc[i].classList.remove("selectElement");
+                                                               }
+                                                          }
+                                                          clickElement.classList.add("selectElement");
+                                                       } else {
+                                                          NewObjectElement
+                                                          clickElement.appendChild(NewObjectElement);
+                                                          selectElement = NewObjectElement;
+                                                          NewObjectElement = null;
+                                                          // перестроить DOM дерево
+                                                          domHTMLTreeStory.getRootNode().removeAll();
+                                                          domHTMLTreeStory.setRootNode(getDOMtree());
+                                                       }
+                                                   },
+                                                   itemdblclick : function(tree, record, item, index, e, options) {
+                                                       var nodeText = record.data.text;
+                                                       clickElement = record.data.ObjectElement;
+                                                       selectElement = record.data.ObjectElement;
+                                                       dblClickElement();
+                                                   }
+                                               }
+                                           },{
+                                               xtype: 'tabpanel',
+                                               title: 'Propery',
+                                               region: 'south',
+                                               height: 400,
+                                               items:[{
+                                                    title: 'Tag Property',
+                                                    items:[
+                                                        {
+                                                          xtype : 'textfield',
+                                                          title : ' ',
+                                                          height: 20,
+                                                           width: '100%',
+                                                             id : 'foundTagProperty',
+                                                           emptyText: 'Найти атрибут тэга'
+                                                        },
+                                                        {
+                                                          id :'tabTagProperty',
+                                                          width: "100%",
+                                                          height: 300,
+                                                          xtype: 'panel',
+                                                          html: 'Список свойств propertyVariant'
+                                                        }
+                                                    ]
+                                                },{
+                                                      title: 'Tag Property',
+                                                      items:[
+                                                            {
+                                                              xtype : 'textfield',
+                                                              title : ' ',
+                                                              height: 20,
+                                                               width: '100%',
+                                                                 id : 'foundProperty',
+                                                              emptyText: 'Найти свойство HTML'
+                                                            },
+                                                            {
+                                                              id :'tabProperty',
+                                                              width: "100%",
+                                                              height: 300,
+                                                              xtype: 'panel',
+                                                              html: 'Список свойств HTML Attribut'
+                                                            }
+                                                      ]
+                                                },{
+                                                    title: 'Style',
+                                                    items:[
+                                                            {
+                                                              xtype : 'textfield',
+                                                              title : ' ',
+                                                              height: 20,
+                                                              emptyText: 'Найти стиль',
+                                                               width: '100%',
+                                                                 id : 'foundStyle'
+                                                            },
+                                                            {
+                                                              id :'tabStyle',
+                                                              width: "100%",
+                                                              height: 300,
+                                                              xtype: 'panel',
+                                                              html: 'Список свойств HTML Style'
+                                                            }
+                                                      ]
+                                                },{
+                                                    title: 'Event',
+                                                    items:[
+                                                            {
+                                                              xtype : 'textfield',
+                                                              title : ' ',
+                                                              emptyText: 'Найти событие',
+                                                              height: 20,
+                                                               width: '100%',
+                                                                 id : 'foundEvent'
+                                                            },
+                                                            {
+                                                              id :'tabEvent',
+                                                              width: "100%",
+                                                              height: 300,
+                                                              xtype: 'panel',
+                                                              html: 'Список свойств HTML Event'
+                                                            }
+                                                    ]
+                                                }],
+                                           }
+                                         ]
+                            },{
+                                xtype: 'panel',
+                                title: 'Element list',
+                                html: 'Правая панель',
+                                region: 'east',
+                                width: 200,
+                                split: true,
+                                xtype: 'treepanel',
+                                autoScroll: true,
+                                split: true,
+                                rootVisible: false,
+                                root: {
+                                    text: 'Компоненты',
+                                    expanded: true,
+                                    children: componentListJson,
+                                },
+                                listeners: {
+                                    itemclick : function(tree, record, item, index, e, options) {
+                                        // var cloneItem = record.data.slice()
+                                        var tagName = record.data.tagName;
+                                        //console.log(record.data);
+                                        if (!tagName) {return;}
+                                        NewObjectElement = ContentEditorDocume.document.createElement( tagName );
+                                        if (record.data.style) {
+                                           for (var key in record.data.style) {
+                                               NewObjectElement.style[key] = record.data.style[key];
+                                           }
+                                        }
+                                        if(record.data.class){
+                                           for(var key in record.data.class){
+                                               NewObjectElement.classList.add( record.data.class[key]);
+                                           }
+                                        }
+                                        if(record.data.property){
+                                           for(var key in record.data.property){
+                                               NewObjectElement.setAttribute(key, record.data.property[key]);
+                                           }
+                                        }
+                                        if (record.data.innerHTML){
+                                            NewObjectElement.innerHTML=record.data.innerHTML;
+                                        }
+                                    }
+                                }
+                            }] ,
+                        //renderTo: Ext.getBody()
+                        renderTo: document.getElementById('editorId')
+                    });
+
+
+                    //----------------------------------------------------------------------------------------
+                    // loadScript("lib/main.js").then(function(){ },function(error){ console.log(error); });
+                    //----------------------------------------------------------------------------------------
+
+                    var ReadHtmlElementId = 0;
+                    var ReadHtmlElement = function(elems,arr) {
+                        if (('' + elems) == '[object HTMLBRElement]') {
+                            return;
+                        } // пропускаем <br/>
+                        if ((''+elems.tagName) === 'undefined') {
+                               return;
+                        } // пропускаем  неизвестные тэги
+                        var sub = {};
+                        if (elems.tagName!='HTML'){
+                           ReadHtmlElementId++;
+                           sub["id"] = "ThreeIdElement_" + ReadHtmlElementId;
+                        }
+                        sub["text"] = '' + elems['tagName'];
+                        if (typeof elems.getAttribute === 'function'){
+                           if (elems.getAttribute("cmptype") != null){
+                              sub["text"]+=" ("+elems.getAttribute("cmptype")+")";
+                           }
+                        }
+                        sub["ObjectElement"] = elems;
+                        sub["children"] = [];
+                        for (var i = 0; i < elems.childNodes.length; i++) {
+                            var SubElemt = elems.childNodes[i]
+                            ReadHtmlElement(SubElemt, sub["children"]);
+                        }
+                        arr.push(sub);
+                    }
+                    var getDOMtree = function() {
+                        TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0]
+                        var arr=[];
+                        var res = { text: 'DOM', expanded: true, children:[] };
+                        ReadHtmlElement(TmpElementSrc,res.children);
+                        return res;
+                    }
+
+
+              var ContentEditorDocume = null;
+              var ContentEditorDocumeIframe = document.getElementById('TabBody');
+              var NewObjectElement = null;
+              var selectElement = null;
+              var clickElement  = null;
+              var TmpElementSrc = null;
+              var TmpElementSrc = null;
+              ContentEditorDocumeIframe.src = "";
+
+
+              ContentEditorDocumeIframe.onload = function () {
+                  var styleWebBuilder = "<style DeletTag=1>"+getTextUrl("component.css")+"</style>";
+                  ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
+                  ContentEditorDocume.document.designMode = 'off';
+                  ContentEditorDocume.document.write(`
+      <html>
+         <head>
+            ${styleWebBuilder}
+            <style>
+              .selectElement{
+                 border: 1px dotted;
+                 border: 1px dotted;
+                 background-color: rgba(230,230,230,0.4);
+                 box-sizing: content-box;
+               }
+              .borderElement{
+                  border-width:1px;
+                  border-style:solid;
+              }
+              .borderVertTextElement{
+                   -ms-transform: rotate(-90deg);
+                   -moz-transform: rotate(-90deg);
+                   -webkit-transform: rotate(-90deg);
+                   transform: rotate(-90deg);
+                   -ms-transform-origin: left top 0;
+                   -moz-transform-origin: left top 0;
+                   -webkit-transform-origin: left top 0;
+                   transform-origin: left top 0;
+                   text-align:center;
+              }
+            </style>
+         </head>
+         <body>
+            <div class="" style = "position:absolute; width:1400; height:660;"  >
+
+            </div>
+         </body>
+      </html>
+                  `);
+                  TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
+                  var elementsSrc = TmpElementSrc.querySelectorAll('*');
+                  body = elementsSrc;
+                  for (var i = 0; i < body.length; i++) {
+                      InitAttributesObject(body[i]);
+                  }
+                  domHTMLTreeStory.getRootNode().removeAll();
+                  domHTMLTreeStory.setRootNode(getDOMtree());
+              }
+
+
+              var saveWebForm = function() {
+                  TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
+                  clearSystemTagFromEditContent(TmpElement,"innrToCaption");
+                  var bodyText= TmpElement.outerHTML;
+                  bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
+                  bodyText = bodyText.replaceAll('class="selectElement"', '');
+                  bodyText = bodyText.replaceAll('.selectElement{', '.select-lement{');
+                  bodyText = bodyText.replaceAll('selectElement', '');
+                  bodyText = bodyText.replaceAll('.select-lement{', '.selectElement{');
+                  bodyText = bodyText.replaceAll('class=""', '');
+                  bodyText = bodyText.replaceAll('style=""', '');
+                  bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
+                  bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
+                  bodyText = bodyText.replaceAll('      </body>', '</body>');
+                  bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
+                  bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
+                  bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
+                  bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
+                  bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
+                  // TmpElement.outerHTML = bodyText;
+                  // TmpElement.innerHTML = bodyText;
+                  // var bodyText = TmpElement.innerHTML
+                  console.log(bodyText);
+                  copyToClipboard(bodyText);
+              }
+
+              var insertElement = function(event) {
+                   clickElement = event.toElement;
+                   var keyTag = event.toElement.tagName.toLowerCase();
+                   if (event.toElement.getAttribute("cmptype")){
+                      keyTag+="-"+event.toElement.getAttribute("cmptype");
+                   }
+                   selectElement = clickElement;
+                   if ((event.button == 0 ) && (NewObjectElement !== null)) {
+                            var keyNewTag = NewObjectElement.tagName.toLowerCase();
+                            if (NewObjectElement.getAttribute("cmptype")){
+                               keyNewTag+="-"+NewObjectElement.getAttribute("cmptype");
+                            }
+                            if (tagInfoList[keyNewTag]){
+                                 if (tagInfoList[keyNewTag].parentTag){
+                                    if ((!tagInfoList[keyTag])||(tagInfoList[keyNewTag].tagName != tagInfoList[keyNewTag].parentTag)){
+                                       alert('Элемент '+ tagInfoList[keyNewTag].tagName+ ' можно добавлять только в '+tagInfoList[keyNewTag].parentTag)
+                                       return;
+                                    }
+                                 }
+                            }
+                      if (NewObjectElement.style.position == "absolute"){
+                        NewObjectElement.style.left = event.layerX;
+                        NewObjectElement.style.top = event.layerY-8;
+                      }
+                      clickElement.appendChild(NewObjectElement);
+                      selectElement = NewObjectElement;
+                      NewObjectElement = null;
+                      // перестроить DOM дерево
+                      domHTMLTreeStory.getRootNode().removeAll();
+                      domHTMLTreeStory.setRootNode(getDOMtree());
+                      var domTreeView = Ext.getCmp('domTreeView');
+                      var startNode = domTreeView.getRootNode();
+                      startNode.cascadeBy(function (childNode) {
+                            if (childNode.get('ObjectElement') == selectElement) {
+                               var record = domHTMLTreeStory.getNodeById(childNode.id);
+                               domTreeView.getSelectionModel().select(record)
+                            }
+                       }, this);
+                      return;
+                   }
+                   if ( event.button == 0 ) {
+                       var elementsSrc = TmpElementSrc.querySelectorAll('*');
+                       for (var i = 0; i < elementsSrc.length; i++) {
+                          if (elementsSrc[i].classList.contains('selectElement')) {
+                              elementsSrc[i].classList.remove("selectElement");
+                          }
+                       }
+                       clickElement.classList.add("selectElement");
+
+                       // Выделить элемент в дом дереве
+                       var domTreeView = Ext.getCmp('domTreeView');
+                       var startNode = domTreeView.getRootNode();
+                       startNode.cascadeBy(function (childNode) {
+                            if (childNode.get('ObjectElement') == selectElement) {
+                               var record = domHTMLTreeStory.getNodeById(childNode.id);
+                               domTreeView.getSelectionModel().select(record)
+                               var path = record.getPath();
+                               domTreeView.expandPath(path);
+                            }
+                       }, this);
+                   }
+              }
+
+              var keyEvent = function(event) {
+                  //console.log(event.keyCode);
+                  if (event.keyCode == 27) { //esc
+                        console.log('ESC')
+                  }
+                  if (event.keyCode == 46) { //del
+                      console.log('DEL')
+                      if ((ContentEditorDocume.document.designMode != 'on' )
+                          && (selectElement!=null)
+                          && (selectElement.tagName!="BODY")
+                         ) {
+                         selectElement.remove();
+                         domHTMLTreeStory.getRootNode().removeAll();
+                         domHTMLTreeStory.setRootNode(getDOMtree());
+                      }
+                  }
+                 //-------------------------------------------
+                 if ((event.keyCode == 37) && (event.ctrlKey==true)&&(selectElement!=null)) { //лево
+                     var left = parseInt( selectElement.style.left );
+                     left-=1;
+                     selectElement.style.left =left+'px';
+                     return;
+                  }
+                  if ((event.keyCode == 39)&&(event.ctrlKey==true)&&(selectElement!=null)) { //права
+                     var left = parseInt( selectElement.style.left );
+                     left+=1;
+                     selectElement.style.left =left+'px';
+                     return;
+                  }
+
+                  if ((event.keyCode == 38)&&(event.ctrlKey==true)&&(selectElement!=null)) { //верх
+                     var top = parseInt( selectElement.style.top );
+                     top-=1;
+                     selectElement.style.top =top+'px';
+                     return;
+                  }
+                  if ((event.keyCode == 40)&&(event.ctrlKey==true)&&(selectElement!=null)) { //низ
+                     var top = parseInt( selectElement.style.top );
+                     top+=1;
+                     selectElement.style.top =top+'px';
+                     return;
+                  }
+                //-------------------------------------------
+                  if ((event.keyCode == 37)&&(event.shiftKey==false)&&(selectElement!=null)) { //лево
+                     var left = parseInt( selectElement.style.left );
+                     left-=10;
+                     selectElement.style.left =left+'px';
+                  }
+                  if ((event.keyCode == 39)&&(event.shiftKey==false)&&(selectElement!=null)) { //права
+                     var left = parseInt( selectElement.style.left );
+                     left+=10;
+                     selectElement.style.left =left+'px';
+                  }
+
+                  if ((event.keyCode == 38)&&(event.shiftKey==false)&&(selectElement!=null)) { //верх
+                     var top = parseInt( selectElement.style.top );
+                     top-=10;
+                     selectElement.style.top =top+'px';
+                  }
+                  if ((event.keyCode == 40)&&(event.shiftKey==false)&&(selectElement!=null)) { //низ
+                     var top = parseInt( selectElement.style.top );
+                     top+=10;
+                     selectElement.style.top =top+'px';
+                  }
+                  //----------------------------------
+                  if ((event.keyCode == 37)&&(event.shiftKey==true)&&(selectElement!=null)) { //лево
+                     var width = parseInt( selectElement.style.width);
+                     width-=1;
+                     selectElement.style.width = width+'px';
+                  }
+                  if ((event.keyCode == 39)&&(event.shiftKey==true)&&(selectElement!=null)) { //права
+                     var width = parseInt( selectElement.style.width );
+                     width+=1;
+                     selectElement.style.width =width+'px';
+                  }
+                  if ((event.keyCode == 38)&&(event.shiftKey==true)&&(selectElement!=null)) { //верх
+                     var height = parseInt( selectElement.style.height );
+                     height-=1;
+                     selectElement.style.height =height+'px';
+                  }
+                  if ((event.keyCode == 40)&&(event.shiftKey==true)&&(selectElement!=null)) { //низ
+                     var height = parseInt( selectElement.style.height );
+                     height+=1;
+                     selectElement.style.height = height+'px';
+                  }
+                  //---------------------------------------
+                  // for (var property in event) {
+                  //    console.log(property+" : "+event[property]);
+                  // }
+              }
+
+              var InitAttributesObject = function (ObjectElement) {
+                  ObjectElement.removeEventListener("mousedown", insertElement);
+                  ObjectElement.addEventListener("mousedown", insertElement, false);
+                  ObjectElement.removeEventListener("keydown", keyEvent);
+                  ObjectElement.addEventListener('keydown', keyEvent, false );
+                  ObjectElement.removeEventListener("dblclick", dblClickElement);
+                  ObjectElement.addEventListener('dblclick', dblClickElement, false );
+              }
+
+              var newWin = null;
+              var dblClickElement = function(event) {
+                    if (selectElement!=null) {
+                              newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
+                              newWin.onload = function() {
+                                  var textEdit =  newWin.document.getElementById("contentText");
+                                  var TmpSelectElement = selectElement.cloneNode(true);
+                                  // clearSystemTagFromEditContent(TmpSelectElement);
+                                  textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
+                                  newWin.document.getElementById("btnSave").onclick = function(){
+                                       // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
+                                       selectElement.outerHTML = newWin.document.getElementById("contentText").value;
+                                       newWin.close();
+                                  };
+                                 newWin.document.onkeydown = function( event ) {
+                                      if ( event.keyCode == 27 ) {
+                                          newWin.close();
+                                      }
+                                  };
+                              }
+                    }
+              }
+
+
+              var clearSystemTextFromEditContent = function(bodyText){
+                  bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
+                  bodyText = bodyText.replaceAll('class="selectElement"', '');
+                  bodyText = bodyText.replaceAll('.selectElement{', '.select-lement{');
+                  bodyText = bodyText.replaceAll('selectElement', '');
+                  bodyText = bodyText.replaceAll('.select-lement{', '.selectElement{');
+                  bodyText = bodyText.replaceAll('class=""', '');
+                  bodyText = bodyText.replaceAll('style=""', '');
+                  bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
+                  bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
+                  bodyText = bodyText.replaceAll('      </body>', '</body>');
+                  return bodyText
+              }
+
+
+              var clearSystemTagFromEditContent = function(TmpSelectElement,innrToCaption){
+                  var elements = TmpSelectElement.querySelectorAll('*');
+                  for (var i = 0; i < elements.length; i++) {
+                     for(var ind in elements[i].classList) {
+                      //  if (typeof elements[i].classList[ind] === 'function') continue;
+                        var txt = ""+elements[i].classList[ind];
+                        if ((txt.indexOf('M2_WebBuilder_') !== -1)
+                         || (txt.indexOf('D3_WebBuilder_') !== -1)
+                         || (txt.indexOf('selectElement') !== -1)
+                         ) {
+                           elements[i].classList.remove(elements[i].classList[ind]);
+                        }
+                     }
+                     // информация о компоненте
+                     var keyTag =  elements[i].tagName.toLowerCase();
+                     if ( elements[i].getAttribute("cmptype")){
+                        keyTag+="-"+ elements[i].getAttribute("cmptype");
+                     }
+                     if (tagInfoList[keyTag]){
+                        if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)){
+                            elements[i].setAttribute("caption", elements[i].innerHTML);
+                            elements[i].innerHTML = "";
+                        }
+                     }
+                     if (elements[i].getAttribute){
+                        if (elements[i].getAttribute("delettag")) elements[i].remove();
+                        if (elements[i].getAttribute("delettag_build_element_tree_id"))elements[i].removeAttribute("delettag_build_element_tree_id")
+                     }
+
+                     /*
+                     for(var key in elements[i]) {
+                        if (typeof elements[i][key] === 'function') continue;
+                        // if (typeof elements[i][key] === 'null') continue;
+                        // if (elements[i][key] == 'null') continue;
+                        console.log(typeof elements[i][key], ind,elements[i][key])
+                        if ( key === 'children') continue;
+                        if ( key === 'childNodes') continue;
+                        if ( key === 'lastChild') continue;
+                        if ( key === 'firstChild ') continue;
+                        if ( key === 'parentNode') continue;
+                        if ( key === 'parentElement') continue;
+                        if ( key === 'ownerDocument') continue;
+                        if ( key === 'attributeStyleMap') continue;
+                        if ( key === 'outerHTML') continue;
+                        if ( key === 'innerHTML') continue;
+                        if ( key === 'part') continue;
+                        //if ( key === 'toString') continue;
+                        //if ( key === 'classList') continue;
+                        if ( key === 'attributes') continue; // список добавленых пользовательских атребут
+                        // console.log("elements[i][key]",""+ind,elements[i][key])
+                        // if ((txt.indexOf('M2_WebBuilder_') !== -1) || (txt.indexOf('D3_WebBuilder_') !== -1)) {
+                        //   elements[i].removeAttribute(key);
+                        // }
+                     }
+                     */
+                  }
+
+
+                  var bodyText= TmpSelectElement.outerHTML;
+                  //console.log(TmpSelectElement.outerHTML);
+                  bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
+                  bodyText = bodyText.replaceAll('class="selectElement"', '');
+                  bodyText = bodyText.replaceAll('.selectElement{', '.select-lement{');
+                  bodyText = bodyText.replaceAll('selectElement', '');
+                  bodyText = bodyText.replaceAll('.select-lement{', '.selectElement{');
+                  bodyText = bodyText.replaceAll('class=""', '');
+                  bodyText = bodyText.replaceAll('style=""', '');
+                  bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
+                  bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
+                  bodyText = bodyText.replaceAll('      </body>', '</body>');
+                  if (innrToCaption){
+                    bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
+                    bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
+                    bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
+                    bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
+                    bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
+                  }
+                  elements.outerHTML = bodyText;
+                  return elements;
+              }
+
+          });
+
+    </script>
+</head>
+
+<body>
+<div id="editorId" style="width:100%;height100%;position:absolute;"></div>
+</body>
+</html>

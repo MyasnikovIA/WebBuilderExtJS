@@ -1,0 +1,189 @@
+[
+  {
+    "text": "Report",
+    "leaf": false,
+    "expanded": true,
+    "children": [
+      {
+        "leaf": true,
+        "text": "Text",
+        "tagName": "div",
+        "innerHtmlToCaption": false,
+        "innerHTML": "text"
+      },
+      {
+        "leaf": true,
+        "text": "Text Block",
+        "tagName": "div",
+        "style": {
+          "position": "absolute",
+          "left": 10,
+          "top": 10,
+          "width": "100px",
+          "height": "60px"
+        },
+        "property": {},
+        "innerHtmlToCaption": false,
+        "innerHTML": "TextBlock"
+      },
+      {
+        "leaf": true,
+        "text": "Border Block",
+        "tagName": "div",
+        "style": {
+          "position": "absolute",
+          "left": 10,
+          "top": 10,
+          "width": "100px",
+          "height": "60px"
+        },
+        "property": {},
+        "class": [
+          "borderElement"
+        ],
+        "innerHtmlToCaption": false,
+        "innerHTML": "Border_Block"
+      },
+      {
+        "leaf": true,
+        "text": "Vertical ext",
+        "tagName": "div",
+        "style": {
+          "position": "absolute",
+          "left": 10,
+          "top": 10,
+          "width": "100px",
+          "height": "60px"
+        },
+        "property": {},
+        "class": [
+          "borderVertTextElement",
+          "borderElement"
+        ],
+        "innerHtmlToCaption": false,
+        "innerHTML": "VertBlock"
+      }
+    ]
+  },
+  {
+    "text": "D3",
+    "leaf": false,
+    "expanded": true,
+    "children": [
+      {
+        "leaf": true,
+        "text": "cmpLabel",
+        "tagName": "cmp-label",
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpLabel",
+        "propertyVariant": {}
+      },
+       {
+        "leaf": true,
+        "text": "cmpButton",
+        "tagName": "cmp-button",
+        "property": {},
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpButtom",
+         "class": [
+          "M2_WebBuilder_button"
+        ],
+       "width": "100px",
+       "height": "20px",
+        "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":"{g1:random()}" },
+        "propertyMandatory": {"name":"string"}
+      },
+      {
+        "leaf": true,
+        "text": "cmpDataSet",
+        "tagName": "cmp-data-set",
+        "innerHTML": "cmpDataSet",
+        "propertyVariant": {},
+        "class": ["D3_WebBuilder_NotVisibleElement"],
+         "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r"
+      },
+      {
+        "leaf": true,
+        "text": "cmpDataSetVar",
+        "tagName": "cmp-data-set-var",
+        "innerHtmlToCaption": true,
+        "innerHTML": "",
+        "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":"{g1:random()}" },
+        "propertyMandatory": {"name":"string"} ,
+        "parentTag": "cmp-data-set",
+        "class": ["D3_WebBuilder_NotVisibleElement"]
+      },
+      {
+        "leaf": true,
+        "text": "cmpAction",
+        "tagName": "cmp-action",
+        "innerHtmlToCaption": true,
+        "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r",
+        "propertyVariant": {"name":"string",
+                          "compile":["true","false"],
+                          "mode":["post","get"],
+                          "max_exec_time":"number"
+        },
+        "propertyMandatory": {"name":"string"} ,
+        "parentTag": "",
+        "class": ["D3_WebBuilder_NotVisibleElement"],
+        "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r"
+      },
+      {
+        "leaf": true,
+        "text": "cmpActionVar",
+        "tagName": "cmp-action-var",
+        "innerHtmlToCaption": true,
+        "innerHTML": "",
+        "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","{name}_Ctrl:caption"],"get":"random" ,"len":"number" },
+        "propertyMandatory": {"name":"string"},
+        "parentTag": "cmp-action",
+        "class": ["D3_WebBuilder_NotVisibleElement"]
+      }
+    ]
+  },
+  {
+    "text": "M2",
+    "leaf": false,
+    "expanded": true,
+    "children": [
+      {
+        "leaf": true,
+        "text": "Button",
+        "tagName": "component",
+        "property": {"cmptype":"Button"},
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpButtom",
+         "class": [
+          "M2_WebBuilder_button"
+        ],
+       "width": "100px",
+       "height": "20px"
+      },
+      {
+        "leaf": true,
+        "text": "ButtonEdit",
+        "tagName": "component",
+        "property": {"cmptype":"ButtonEdit"},
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpButtom"
+      },
+      {
+        "leaf": true,
+        "text": "CellLabel",
+        "tagName": "component",
+        "property": {"cmptype":"CellLabel"},
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpButtom"
+      },
+      {
+        "leaf": true,
+        "text": "Label",
+        "tagName": "component",
+        "property": {"cmptype":"Label"},
+        "innerHtmlToCaption": true,
+        "innerHTML": "cmpLabel"
+      }
+    ]
+  }
+]
