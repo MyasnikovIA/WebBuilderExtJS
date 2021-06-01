@@ -116,7 +116,6 @@
         "leaf": true,
         "text": "cmpAction",
         "tagName": "cmp-action",
-        "innerHtmlToCaption": true,
         "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r",
         "propertyVariant": {"name":"string",
                           "compile":["true","false"],
@@ -125,14 +124,12 @@
         },
         "propertyMandatory": {"name":"string"} ,
         "parentTag": "",
-        "class": ["D3_WebBuilder_NotVisibleElement"],
-        "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r"
+        "class": ["D3_WebBuilder_NotVisibleElement"]
       },
       {
         "leaf": true,
         "text": "cmpActionVar",
         "tagName": "cmp-action-var",
-        "innerHtmlToCaption": true,
         "innerHTML": "",
         "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","{name}_Ctrl:caption"],"get":"random" ,"len":"number" },
         "propertyMandatory": {"name":"string"},

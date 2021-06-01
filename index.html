@@ -37,6 +37,7 @@
              }
          }
          structToArr( componentListJson, tagInfoList );
+         console.log(tagInfoList);
 
 
          Ext.onReady(function() {
@@ -329,7 +330,6 @@
                     //----------------------------------------------------------------------------------------
                     // loadScript("lib/main.js").then(function(){ },function(error){ console.log(error); });
                     //----------------------------------------------------------------------------------------
-
                     var ReadHtmlElementId = 0;
                     var ReadHtmlElement = function(elems,arr) {
                         if (('' + elems) == '[object HTMLBRElement]') {
@@ -338,6 +338,9 @@
                         if ((''+elems.tagName) === 'undefined') {
                                return;
                         } // пропускаем  неизвестные тэги
+                        if (elems.getAttribute("DeletTag") != null){
+                            return;
+                        } // пропускаем тэг с атрибутом DeletTag
                         var sub = {};
                         if (elems.tagName!='HTML'){
                            ReadHtmlElementId++;
@@ -406,7 +409,7 @@
             </style>
          </head>
          <body>
-            <div class="" style = "position:absolute; width:1400; height:660;"  >
+            <div class="" style = "position:absolute; width:800; height:660;"  >
 
             </div>
          </body>
@@ -440,6 +443,9 @@
                   bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
                   bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
                   bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
+                  bodyText = bodyText.replaceAll('></cmpDataSetVar>', '/>');
+                  bodyText = bodyText.replaceAll('></cmpActionVar>', '/>');
+                  bodyText = bodyText.replaceAll('></cmpLabel>', '/>');
                   // TmpElement.outerHTML = bodyText;
                   // TmpElement.innerHTML = bodyText;
                   // var bodyText = TmpElement.innerHTML
@@ -663,6 +669,9 @@
                      }
                      if (tagInfoList[keyTag]){
                         if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)) {
+
+                            console.log("tagInfoList[keyTag].innerHtmlToCaption",tagInfoList[keyTag].innerHtmlToCaption)
+
                             elements[i].setAttribute("caption", elements[i].innerHTML);
                             elements[i].innerHTML = "";
                         }
