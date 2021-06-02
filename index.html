@@ -8,8 +8,14 @@
     <script type="text/javascript" src="lib/ExtJS_6.0.0/ext-all.js"></script>
     <script type="text/javascript" src="lib/system.js"></script>
     <script type="text/javascript">
-         // https://metanit.com/web/extjs/6.7.php
-         // https://www.w3cschool.cn/extjs/extjs_localization.html
+
+         // --------------- Вдохновение получил из источников -----------
+         //  https://metanit.com/web/extjs/
+         //  https://metanit.com/web/extjs/6.7.php
+         //  https://metanit.com/web/extjs/7.8.php
+         //  https://www.w3cschool.cn/extjs/extjs_localization.html
+         // -------------------------------------------------------------
+
          var clientHeight = document.documentElement.clientHeight;
          var clientWidth = document.documentElement.clientWidth ;
          var componentListJson = getJsonUrl('component.json');
@@ -154,6 +160,7 @@
                                                 id: 'domTreeView',
                                                xtype: 'treepanel',
                                                rootVisible: false,
+                                               autoScroll: true,
                                                store: domHTMLTreeStory,
                                                listeners: {
                                                    itemclick : function(tree, record, item, index, e, options) {
@@ -409,7 +416,7 @@
             </style>
          </head>
          <body>
-            <div class="" style = "position:absolute; width:800; height:660;"  >
+            <div class="" style = "position:absolute; width:780; height:1117; left:0;top:0"  >
 
             </div>
          </body>
@@ -446,6 +453,7 @@
                   bodyText = bodyText.replaceAll('></cmpDataSetVar>', '/>');
                   bodyText = bodyText.replaceAll('></cmpActionVar>', '/>');
                   bodyText = bodyText.replaceAll('></cmpLabel>', '/>');
+                  bodyText = bodyText.replaceAll('<br>', '<br/>');
                   // TmpElement.outerHTML = bodyText;
                   // TmpElement.innerHTML = bodyText;
                   // var bodyText = TmpElement.innerHTML
