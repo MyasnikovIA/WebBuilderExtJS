@@ -65,15 +65,30 @@
                     dock: 'top',
                     items: [
                         {
-                            text: 'Кнопка'
-                        },{
-                            xtype: 'splitbutton',
-                            text : 'Кнопка с меню',
+                            text : 'Edit',
                             menu: [
-                                {text: 'C#'},
-                                {text: 'Java'},
-                                {text: 'C++'},
-                                {text: 'Basic'}
+                                {text : 'iframe Designer On/Off',
+                                 listeners: {
+                                        click: function() {
+                                            if (ContentEditorDocume.document.designMode == 'on' ){
+                                                  ContentEditorDocume.document.designMode = 'off'
+                                            } else {
+                                                  ContentEditorDocume.document.designMode = 'on'
+                                            }
+                                        }
+                                    }
+                                },
+                                { text: 'iframe Scroll On/Off',
+                                  listeners: {
+                                        click: function() {
+                                            if ( ContentEditorDocumeIframe.getAttribute("scrolling")){
+                                                ContentEditorDocumeIframe.removeAttribute("scrolling");
+                                            } else {
+                                                ContentEditorDocumeIframe.setAttribute("scrolling", "no");
+                                            }
+                                        }
+                                    }
+                                }
                             ]
                         },{
                             text : 'SaveToClipboard',
@@ -91,17 +106,6 @@
                             }
                         }
                         ,{
-                            text : 'Designer On/Off',
-                            listeners: {
-                                click: function() {
-                                    if (ContentEditorDocume.document.designMode == 'on' ){
-                                          ContentEditorDocume.document.designMode = 'off'
-                                    } else {
-                                          ContentEditorDocume.document.designMode = 'on'
-                                    }
-                                }
-                            }
-                        },{
                             text : 'CopyElement',
                             listeners: {
                                 click: function() {
@@ -133,7 +137,7 @@
                         items: [{
                                 xtype: 'panel',
                                 //title: '',
-                                html: '<iframe id="TabBody" width="100%" height="100%"></iframe>',
+                                html: '<iframe id="TabBody" width="100%" height="100%" ></iframe>',
                                 region: 'center',
                                 margin: '5 5 5 5',
                                 split: true
@@ -392,6 +396,7 @@
               var TmpElementSrc = null;
               var TmpElementSrc = null;
               ContentEditorDocumeIframe.src = "report.html";
+              ContentEditorDocumeIframe.setAttribute("scrolling", "no");
               ContentEditorDocumeIframe.onload = function () {
                   ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
                   ContentEditorDocume.document.designMode = 'off';
