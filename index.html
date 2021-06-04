@@ -43,8 +43,6 @@
              }
          }
          structToArr( componentListJson, tagInfoList );
-         console.log(tagInfoList);
-
 
          Ext.onReady(function() {
              var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
@@ -81,10 +79,18 @@
                             text : 'SaveToClipboard',
                             listeners: {
                                 click: function() {
-                                    saveWebForm()
+                                    saveWebForm();
                                 }
                             }
                         },{
+                            text : 'LoadFromClipboard',
+                            listeners: {
+                                click: function() {
+                                    LoadWebForm();
+                                }
+                            }
+                        }
+                        ,{
                             text : 'Designer On/Off',
                             listeners: {
                                 click: function() {
@@ -191,7 +197,7 @@
                                                                 var path = record.getPath();
                                                                 domTreeView.expandPath(path);
                                                              }
-                                                          }, this);
+                                                          }, this);//5
                                                        }
                                                    },
                                                    itemdblclick : function(tree, record, item, index, e, options) {
@@ -360,18 +366,21 @@
                            }
                         }
                         sub["ObjectElement"] = elems;
-                        sub["children"] = [];
-                        for (var i = 0; i < elems.childNodes.length; i++) {
-                            var SubElemt = elems.childNodes[i]
-                            ReadHtmlElement(SubElemt, sub["children"]);
-                        }
                         arr.push(sub);
+                        // обработка детей
+                        if ((elems.childNodes)&&(elems.childNodes.length >0 )){
+                            sub["children"] = [];
+                            for(var i = 0; i < elems.childNodes.length; i++) {
+                                var SubElemt = elems.childNodes[i]
+                                ReadHtmlElement(SubElemt, sub["children"]);
+                            }
+                        }
                     }
                     var getDOMtree = function() {
                         TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0]
-                        var arr=[];
+                        var obj={};
                         var res = { text: 'DOM', expanded: true, children:[] };
-                        ReadHtmlElement(TmpElementSrc,res.children);
+                        ReadHtmlElement (TmpElementSrc ,res.children)
                         return res;
                     }
 
@@ -382,46 +391,10 @@
               var clickElement  = null;
               var TmpElementSrc = null;
               var TmpElementSrc = null;
-              ContentEditorDocumeIframe.src = "";
+              ContentEditorDocumeIframe.src = "report.html";
               ContentEditorDocumeIframe.onload = function () {
-                  var styleWebBuilder = "<style DeletTag=1>"+getTextUrl("component.css")+"</style>";
                   ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
                   ContentEditorDocume.document.designMode = 'off';
-                  ContentEditorDocume.document.write(`
-      <html>
-         <head>
-            ${styleWebBuilder}
-            <style>
-              .selectElement{
-                 border: 1px dotted;
-                 border: 1px dotted;
-                 background-color: rgba(230,230,230,0.4);
-                 box-sizing: content-box;
-               }
-              .borderElement{
-                  border-width:1px;
-                  border-style:solid;
-              }
-              .borderVertTextElement{
-                   -ms-transform: rotate(-90deg);
-                   -moz-transform: rotate(-90deg);
-                   -webkit-transform: rotate(-90deg);
-                   transform: rotate(-90deg);
-                   -ms-transform-origin: left top 0;
-                   -moz-transform-origin: left top 0;
-                   -webkit-transform-origin: left top 0;
-                   transform-origin: left top 0;
-                   text-align:center;
-              }
-            </style>
-         </head>
-         <body>
-            <div class="" style = "position:absolute; width:780; height:1117; left:0;top:0"  >
-
-            </div>
-         </body>
-      </html>
-                  `);
                   TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
                   var elementsSrc = TmpElementSrc.querySelectorAll('*');
                   body = elementsSrc;
@@ -430,6 +403,76 @@
                   }
                   domHTMLTreeStory.getRootNode().removeAll();
                   domHTMLTreeStory.setRootNode(getDOMtree());
+              }
+              var LoadWebForm = function() {
+                       newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
+                       newWin.onload = function() {
+                          var textEdit =  newWin.document.getElementById("contentText");
+                          newWin.document.getElementById("btnSave").onclick = function(){
+                              var bodyText = newWin.document.getElementById("contentText").value;
+                                  bodyText = bodyText.replaceAll('cmpActionVar', toWorldsCase("cmpActionVar") );
+                                  bodyText = bodyText.replaceAll('cmpAction', toWorldsCase('cmpAction'));
+                                  bodyText = bodyText.replaceAll('cmpDataSetVar',toWorldsCase('cmpDataSetVar'));
+                                  bodyText = bodyText.replaceAll('cmpDataSet',toWorldsCase('cmpDataSet'));
+                                  bodyText = bodyText.replaceAll('cmpButton',toWorldsCase('cmpButton'));
+                                  bodyText = bodyText.replaceAll('cmpLabel', toWorldsCase('cmpLabel'));
+                                  bodyText = bodyText.replaceAll('cmpScript', toWorldsCase('cmpScript'));
+                                  bodyText = bodyText.replaceAll('cmpEdit', toWorldsCase('cmpEdit'));
+                                  bodyText = bodyText.replaceAll('cmpUnitEdit', toWorldsCase('cmpUnitEdit'));
+                                  bodyText = bodyText.replaceAll('cmpDateEdit', toWorldsCase('cmpDateEdit'));
+                                  bodyText = bodyText.replaceAll('cmpTextArea', toWorldsCase('cmpTextArea'));
+                                  bodyText = bodyText.replaceAll('cmpScript', toWorldsCase('cmpScript'));
+                                  bodyText = bodyText.replaceAll('cmpDependences', toWorldsCase('cmpDependences'));
+                                  console.log(bodyText);
+                              var parser = new DOMParser();
+                              var xmlDoc = parser.parseFromString(bodyText, "text/xml");
+                              //var xmlDoc = parser.parseFromString(bodyText,  "text/html");
+                              x = xmlDoc.documentElement;
+                              domList = xmlDoc.querySelectorAll('*')
+                              for(var ind in domList){
+                                 if ( (domList[ind].getAttribute)&&(domList[ind].getAttribute("caption") != null) ) {
+                                     if (domList[ind].tagName == 'DIV') continue;
+                                     domList[ind].textContent = domList[ind].getAttribute("caption");
+                                     domList[ind].removeAttribute("caption");
+                                 }
+                                 if ((domList[ind].tagName!=='indefined') && (tagInfoList[domList[ind].tagName])){
+                                        if (tagInfoList[domList[ind].tagName].class){
+                                           for (var subind in  tagInfoList[domList[ind].tagName].class){
+                                              var className = tagInfoList[domList[ind].tagName].class[subind];
+                                              domList[ind].classList.add(className);
+                                           }
+                                        }
+                                         console.log("domList[ind].tagName",domList[ind].tagName);
+                                         console.log(tagInfoList[domList[ind].tagName]);
+                                 }
+
+                              }
+
+                              selectElement=ContentEditorDocume.document.getElementsByTagName('BODY')[0];
+                              selectElement.outerHTML = new XMLSerializer().serializeToString(xmlDoc.documentElement);
+
+                              // перестроить дом дерево
+                              domHTMLTreeStory.getRootNode().removeAll();
+                              domHTMLTreeStory.setRootNode(getDOMtree());
+                              var domTreeView = Ext.getCmp('domTreeView');
+                              var startNode = domTreeView.getRootNode();
+                              startNode.cascadeBy(function (childNode) {
+                                 if (childNode.get('ObjectElement') == selectElement) {
+                                    var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                    domTreeView.getSelectionModel().select(record);
+                                    var path = record.getPath();
+                                    domTreeView.expandPath(path);
+                                 }
+                              }, this); // 1
+
+                              newWin.close();
+                          };
+                          newWin.document.onkeydown = function( event ) {
+                              if ( event.keyCode == 27 ) {
+                                     newWin.close();
+                              }
+                          };
+                       }
               }
               var saveWebForm = function() {
                   TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
@@ -445,14 +488,26 @@
                   bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
                   bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                   bodyText = bodyText.replaceAll('      </body>', '</body>');
-                  bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
-                  bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
-                  bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
-                  bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
-                  bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
+                  // --------------------------------------------------
+                  bodyText = bodyText.replaceAll('cmp-action-var', toCamelCase('cmp-action-var') );
+                  bodyText = bodyText.replaceAll('cmp-action', toCamelCase('cmp-action'));
+                  bodyText = bodyText.replaceAll('cmp-data-set-var',toCamelCase('cmp-data-set-var'));
+                  bodyText = bodyText.replaceAll('cmp-data-set',toCamelCase('cmp-data-set'));
+                  bodyText = bodyText.replaceAll('cmp-button',toCamelCase('cmp-button'));
+                  bodyText = bodyText.replaceAll('cmp-label', toCamelCase('cmp-label'));
+                  bodyText = bodyText.replaceAll('cmp-script', toCamelCase('cmp-script'));
+                  bodyText = bodyText.replaceAll('cmp-edit', toCamelCase('cmp-edit'));
+                  bodyText = bodyText.replaceAll('cmp-unit-edit', toCamelCase('cmp-unit-edit'));
+                  bodyText = bodyText.replaceAll('cmp-date-edit', toCamelCase('cmp-date-edit'));
+                  bodyText = bodyText.replaceAll('cmp-text-area', toCamelCase('cmp-text-area'));
+                  bodyText = bodyText.replaceAll('cmp-dependences', toCamelCase('cmp-dependences'));
+
+                  // --------------------------------------------------
                   bodyText = bodyText.replaceAll('></cmpDataSetVar>', '/>');
                   bodyText = bodyText.replaceAll('></cmpActionVar>', '/>');
                   bodyText = bodyText.replaceAll('></cmpLabel>', '/>');
+                  bodyText = bodyText.replaceAll('></cmpButton>', '/>');
+                  // --------------------------------------------------
                   bodyText = bodyText.replaceAll('<br>', '<br/>');
                   // TmpElement.outerHTML = bodyText;
                   // TmpElement.innerHTML = bodyText;
@@ -498,7 +553,7 @@
                                var record = domHTMLTreeStory.getNodeById(childNode.id);
                                domTreeView.getSelectionModel().select(record)
                             }
-                       }, this);
+                       }, this); //2
                       return;
                    }
                    if ( event.button == 0 ) {
@@ -519,7 +574,7 @@
                                var path = record.getPath();
                                domTreeView.expandPath(path);
                             }
-                       }, this);
+                       }, this);//4
                    }
               }
 
@@ -677,9 +732,6 @@
                      }
                      if (tagInfoList[keyTag]){
                         if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)) {
-
-                            console.log("tagInfoList[keyTag].innerHtmlToCaption",tagInfoList[keyTag].innerHtmlToCaption)
-
                             elements[i].setAttribute("caption", elements[i].innerHTML);
                             elements[i].innerHTML = "";
                         }

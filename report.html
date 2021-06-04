@@ -1,0 +1,73 @@
+<html>
+     <link>
+         <link  DeletTag=1 href="component.css" rel="stylesheet"></link>
+        <style>
+          .selectElement{
+             border: 1px dotted;
+             border: 1px dotted;
+             background-color: rgba(230,230,230,0.4);
+             box-sizing: content-box;
+           }
+          .borderElement{
+              border-width:1px;
+              border-style:solid;
+          }
+          .borderVertTextElement{
+               -ms-transform: rotate(-90deg);
+               -moz-transform: rotate(-90deg);
+               -webkit-transform: rotate(-90deg);
+               transform: rotate(-90deg);
+               -ms-transform-origin: left top 0;
+               -moz-transform-origin: left top 0;
+               -webkit-transform-origin: left top 0;
+               transform-origin: left top 0;
+               text-align:center;
+          }
+        </style>
+     </head>
+     <body>
+        <div cmptype="Form" class="d3form formBackground" oncreate="Form.onCreate();" onshow="Form.onShow();">
+            <!--
+            Запуск JS:
+                openD3Form('Reports/FME/examinationLivingPersonsMonthSMEcall', true);
+            -->
+            <cmp-script>
+              <![CDATA[
+                  Form.onCreate = function () {
+                     setVar('DEPS', $_GET['DEPS']);
+                  }
+                  Form.onShow = function () {
+                    executeAction('InitAction', function(){
+
+                    });
+                  }
+              ]]>
+            </cmp-script>
+            <cmp-action name="InitAction">
+               <![CDATA[
+                     begin
+                       null;
+                     end;
+               ]]>
+               <cmp-action-var name="LPU" src="LPU" srctype="session"></cmp-action-var>
+               <cmp-action-var name="IN"  src="IN"  srctype="var" get="gIN"/></cmp-action-var>
+               <cmp-action-var name="OUT" src="OUT" srctype="var" put="pOUT" len="17"/></cmp-action-var>
+            </cmp-action>
+
+            <cmp-data-set name="DsReport">
+                <![CDATA[
+                 select '111' from dual
+                ]]>
+                <cmp-data-set-var name="LPU"         src="LPU"                 srctype="session"></cmp-data-set-var>
+                <cmp-data-set-var name="D1"          src="DATE_FROM"           srctype="var" get="vD1"></cmp-data-set-var>
+             </cmp-data-set>
+
+             <div class="" style = "position:absolute; width:780; height:1117; left:0;top:0"  >
+                <div>
+                    <div>1</div>
+                    <div>2</div>
+                </div>
+             </div>
+        </div>
+     </body>
+</html>
