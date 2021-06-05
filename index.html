@@ -46,7 +46,8 @@
          structToArr( componentListJson, tagInfoList );
 
          Ext.onReady(function() {
-             var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
+            var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
+            var elementListTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
 
             var propertyStory = Ext.create('Ext.data.Store', {
                 storeId:'propertyStory',
@@ -227,7 +228,8 @@
                                                                   viewPropertyInfo(selectElement); // показать свойства выбранного элемента
                                                                } else {
                                                                   if (testParentTag(clickElement, NewObjectElement ) == false){
-                                                                    alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+clickElement.tagName)
+                                                                    // alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+clickElement.tagName);
+                                                                    Ext.Msg.alert('Error!','Нельзя добавить '+toCamelCase(NewObjectElement.tagName.toLowerCase())+' в родителя '+toCamelCase(clickElement.tagName.toLowerCase()));
                                                                     NewObjectElement = null;
                                                                     return;
                                                                   }
@@ -416,42 +418,80 @@
                                 region: 'east',
                                 width: 200,
                                 split: true,
-                                xtype: 'treepanel',
-                                autoScroll: true,
-                                split: true,
-                                rootVisible: false,
-                                root: {
-                                    text: 'Компоненты',
-                                    expanded: true,
-                                    children: componentListJson,
-                                },
-                                listeners: {
-                                    itemclick : function(tree, record, item, index, e, options) {
-                                        // var cloneItem = record.data.slice()
-                                        var tagName = record.data.tagName;
-                                        //console.log(record.data);
-                                        if (!tagName) {return;}
-                                        NewObjectElement = ContentEditorDocume.document.createElement( tagName );
-                                        if (record.data.style) {
-                                           for (var key in record.data.style) {
-                                               NewObjectElement.style[key] = record.data.style[key];
+                                items:[
+                                      {
+                                          region: 'north',
+                                           width: 3500,
+                                           xtype: 'textfield',
+                                            id: 'filterElementListView',
+                                           name: 'name',
+                                           listeners: {
+                                               specialkey: function(f,e){
+                                                  if (e.getKey() == e.ENTER) {
+                                                     var filterDomTreeView = Ext.getCmp('filterElementListView');
+                                                     var ElementListView = Ext.getCmp('ElementListView');
+                                                     var srctxt = filterDomTreeView.value.toLowerCase();
+                                                     Ext.getCmp('ElementListView').store.filterBy(function(rec) {
+                                                          if (srctxt.length == 0 ) return true;
+                                                          if (rec.data.text.toLowerCase().indexOf(srctxt) != -1) {
+                                                              var record = elementListTreeStory.getNodeById(rec.data.id);
+                                                              ElementListView.getSelectionModel().select(record)
+                                                              var path = record.getPath();
+                                                              ElementListView.expandPath(path);
+                                                              return true;
+                                                          }
+                                                          return true;
+                                                     });
+
+                                                  }
+                                               }
                                            }
-                                        }
-                                        if(record.data.class){
-                                           for(var key in record.data.class){
-                                               NewObjectElement.classList.add( record.data.class[key]);
-                                           }
-                                        }
-                                        if(record.data.property){
-                                           for(var key in record.data.property){
-                                               NewObjectElement.setAttribute(key, record.data.property[key]);
-                                           }
-                                        }
-                                        if (record.data.innerHTML){
-                                            NewObjectElement.innerHTML=record.data.innerHTML;
-                                        }
-                                    }
-                                }
+                                      },
+                                      {
+                                          region: 'north',
+                                          width: 200,
+                                          height: 4000,
+                                          split: true,
+                                          xtype: 'treepanel',
+                                          autoScroll: true,
+                                          split: true,
+                                          rootVisible: false,
+                                          id: 'ElementListView',
+                                          store: elementListTreeStory,
+                                          /*  root: {text: 'Компоненты',expanded: true,children: componentListJson, }, */
+                                          listeners: {
+                                               afterrender: function() {
+                                                  elementListTreeStory.getRootNode().removeAll();
+                                                  elementListTreeStory.setRootNode({ "text": "Root", "expanded": true, "children":componentListJson});
+                                               },
+                                              itemclick : function(tree, record, item, index, e, options) {
+                                                  // var cloneItem = record.data.slice()
+                                                  var tagName = record.data.tagName;
+                                                  //console.log(record.data);
+                                                  if (!tagName) {return;}
+                                                  NewObjectElement = ContentEditorDocume.document.createElement( tagName );
+                                                  if (record.data.style) {
+                                                     for (var key in record.data.style) {
+                                                         NewObjectElement.style[key] = record.data.style[key];
+                                                     }
+                                                  }
+                                                  if(record.data.class){
+                                                     for(var key in record.data.class){
+                                                         NewObjectElement.classList.add( record.data.class[key]);
+                                                     }
+                                                  }
+                                                  if(record.data.property){
+                                                     for(var key in record.data.property){
+                                                         NewObjectElement.setAttribute(key, record.data.property[key]);
+                                                     }
+                                                  }
+                                                  if (record.data.innerHTML){
+                                                      NewObjectElement.innerHTML=record.data.innerHTML;
+                                                  }
+                                              }
+                                          }
+                                      }
+                                   ]
                             }] ,
                         //renderTo: Ext.getBody()
                         renderTo: document.getElementById('editorId')
@@ -661,7 +701,8 @@
                    selectElement = clickElement;
                    if ((event.button == 0 ) && (NewObjectElement !== null)) {
                       if (testParentTag(selectElement, NewObjectElement ) == false){
-                        alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+selectElement.tagName)
+                        // alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+selectElement.tagName)
+                        Ext.Msg.alert('Error!', 'Нельзя добавить '+toCamelCase(NewObjectElement.tagName.toLowerCase())+' в родителя '+ toCamelCase(selectElement.tagName.toLowerCase()));
                         NewObjectElement = null;
                         return;
                       }
