@@ -154,129 +154,178 @@
                                 region: 'west',
                                 width: 300,
                                 split: true,
-                                items: [     {
+                                items: [ {
                                                title: 'DOM tree',
                                                region: 'north',
-                                               width: 350,
                                                height: 400,
-                                               split: true,
-                                                id: 'domTreeView',
-                                               xtype: 'treepanel',
-                                               rootVisible: false,
-                                               autoScroll: true,
-                                               store: domHTMLTreeStory,
-                                               listeners: {
-                                                   itemclick : function(tree, record, item, index, e, options) {
-                                                       var nodeText = record.data.text;
-                                                       clickElement = record.data.ObjectElement;
-                                                       selectElement = record.data.ObjectElement;
-                                                       if (NewObjectElement == null) {
-                                                          var elementsSrc = TmpElementSrc.querySelectorAll('*');
-                                                          for (var i = 0; i < elementsSrc.length; i++) {
-                                                               if (elementsSrc[i].classList.contains('selectElement')) {
-                                                                   elementsSrc[i].classList.remove("selectElement");
-                                                               }
-                                                          }
-                                                          clickElement.classList.add("selectElement");
-                                                          viewPropertyInfo(selectElement); // показать свойства выбранного элемента
-                                                       } else {
-                                                          if (testParentTag(clickElement, NewObjectElement ) == false){
-                                                            alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+clickElement.tagName)
-                                                            NewObjectElement = null;
-                                                            return;
-                                                          }
-                                                          clickElement.appendChild(NewObjectElement);
-                                                          viewPropertyInfo(NewObjectElement); // показать свойства выбранного элемента
-                                                          selectElement = NewObjectElement;
-                                                          NewObjectElement = null;
-                                                          // перестроить DOM дерево
-                                                          domHTMLTreeStory.getRootNode().removeAll();
-                                                          domHTMLTreeStory.setRootNode(getDOMtree());
-                                                          var domTreeView = Ext.getCmp('domTreeView');
-                                                          var startNode = domTreeView.getRootNode();
-                                                          startNode.cascadeBy(function (childNode) {
-                                                             if (childNode.get('ObjectElement') == selectElement) {
-                                                                var record = domHTMLTreeStory.getNodeById(childNode.id);
-                                                                domTreeView.getSelectionModel().select(record);
-                                                                var path = record.getPath();
-                                                                domTreeView.expandPath(path);
-                                                             }
-                                                          }, this);//5
-                                                       }
-                                                   },
-                                                   itemkeydown:function( tree, record, item, index, e, eOpts ){
-                                                       var nodeText = record.data.text;
-                                                       clickElement = record.data.ObjectElement;
-                                                       if (e.keyCode == 46){ // delete element
-                                                             if (  (selectElement!=null)
-                                                                  && (selectElement.tagName!="BODY")
-                                                                  && (selectElement.tagName!="HTML")
-                                                                  && (selectElement.tagName!="HEAD")
-                                                                 ) {
-                                                                     var parentEl = selectElement.parentElement;
-                                                                     selectElement.remove();
-                                                                     selectElement = parentEl;
-                                                                     viewPropertyInfo(selectElement); // показать свойства выбранного элемента
-                                                                     domHTMLTreeStory.getRootNode().removeAll();
-                                                                     domHTMLTreeStory.setRootNode(getDOMtree());
-                                                                     var domTreeView = Ext.getCmp('domTreeView');
-                                                                     var startNode = domTreeView.getRootNode();
-                                                                     startNode.cascadeBy(function (childNode) {
-                                                                         if (childNode.get('ObjectElement') == selectElement) {
+                                               xtype: 'panel',
+                                               items:[
+                                                       {
+                                                            width: 3500,
+                                                            xtype: 'textfield',
+                                                             id: 'filterDomTreeView',
+                                                            name: 'name',
+                                                            // allowBlank: false,  // requires a non-empty value
+                                                            listeners: {
+                                                                specialkey: function(f,e){
+                                                                   if (e.getKey() == e.ENTER) {
+                                                                      var filterDomTreeView = Ext.getCmp('filterDomTreeView');
+                                                                      var srctxt = filterDomTreeView.value.toLowerCase();
+                                                                      var domTreeView = Ext.getCmp('domTreeView');
+                                                                      var startNode = domTreeView.getRootNode();
+                                                                      startNode.cascadeBy(function (childNode) {
+                                                                         var node = childNode.get('ObjectElement');
+                                                                         if (typeof node === 'undefined') return;
+                                                                         if (typeof node['tagName'] === 'undefined') return;
+                                                                         function _setSelectItem(){ // локальная функция выбора элемента в дереве
                                                                             var record = domHTMLTreeStory.getNodeById(childNode.id);
                                                                             domTreeView.getSelectionModel().select(record);
                                                                             var path = record.getPath();
                                                                             domTreeView.expandPath(path);
+                                                                            viewPropertyInfo(node); // перечитать свойства выбранного элеменита
                                                                          }
-                                                                     }, this);
-                                                              }
-                                                       }
-                                                   },
-                                                   itemdblclick : function(tree, record, item, index, e, options) {
-                                                       var nodeText = record.data.text;
-                                                       clickElement = record.data.ObjectElement;
-                                                       selectElement = record.data.ObjectElement;
-                                                       dblClickElement();
-                                                   },
-                                                   itemcontextmenu : function(view, r, node, index, event) {
-                                                        event.stopEvent();
-                                                        Ext.create('Ext.menu.Menu', {
-                                                            items : [
-                                                                {
-                                                                    text : 'Font',
-                                                                    menu: [
-                                                                        {text : 'delete font-size', listeners: { click: function(e) {
-                                                                            if (selectElement != null ){ selectElement.style.removeProperty("font-size"); }
-                                                                        } } },
-                                                                        {text : 'font-size: 8px;',size:"8px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 10px;',size:"10px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 12px;',size:"12px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 14px;',size:"14px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 16px;',size:"14px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 18px;',size:"18px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                        {text : 'font-size: 20px;',size:"20px", listeners: { click: function(e) {
-                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
-                                                                        } } },
-                                                                    ]
+                                                                         // поиск по имени компонента
+                                                                         if (node.getAttribute("name") != null ){
+                                                                             if ( toCamelCase(node.getAttribute("name")).toLowerCase().indexOf(srctxt)!= -1) {
+                                                                               _setSelectItem();
+                                                                               return false;
+                                                                             }
+                                                                         }
+                                                                         // поиск по имени ТЭГа
+                                                                         if(toCamelCase(node['tagName']).toLowerCase().indexOf(srctxt) != -1) {
+                                                                               _setSelectItem();
+                                                                               return false;
+                                                                         }
+                                                                      }, this);//5
+
+                                                                   }
                                                                 }
-                                                            ]
-                                                        }).showAt(event.getXY());
-                                                        return false;
-                                                   },
-                                               }
-                                           },{
+                                                            }
+                                                       },
+                                                       {
+                                                       region: 'north',
+                                                       height: 400,
+                                                       split: true,
+                                                        id: 'domTreeView',
+                                                       xtype: 'treepanel',
+                                                       rootVisible: false,
+                                                       autoScroll: true,
+                                                       store: domHTMLTreeStory,
+                                                       listeners: {
+                                                           itemclick : function(tree, record, item, index, e, options) {
+                                                               var nodeText = record.data.text;
+                                                               clickElement = record.data.ObjectElement;
+                                                               selectElement = record.data.ObjectElement;
+                                                               if (NewObjectElement == null) {
+                                                                  var elementsSrc = TmpElementSrc.querySelectorAll('*');
+                                                                  for (var i = 0; i < elementsSrc.length; i++) {
+                                                                       if (elementsSrc[i].classList.contains('selectElement')) {
+                                                                           elementsSrc[i].classList.remove("selectElement");
+                                                                       }
+                                                                  }
+                                                                  clickElement.classList.add("selectElement");
+                                                                  viewPropertyInfo(selectElement); // показать свойства выбранного элемента
+                                                               } else {
+                                                                  if (testParentTag(clickElement, NewObjectElement ) == false){
+                                                                    alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+clickElement.tagName)
+                                                                    NewObjectElement = null;
+                                                                    return;
+                                                                  }
+                                                                  clickElement.appendChild(NewObjectElement);
+                                                                  viewPropertyInfo(NewObjectElement); // показать свойства выбранного элемента
+                                                                  selectElement = NewObjectElement;
+                                                                  NewObjectElement = null;
+                                                                  // перестроить DOM дерево
+                                                                  domHTMLTreeStory.getRootNode().removeAll();
+                                                                  domHTMLTreeStory.setRootNode(getDOMtree());
+                                                                  var domTreeView = Ext.getCmp('domTreeView');
+                                                                  var startNode = domTreeView.getRootNode();
+                                                                  startNode.cascadeBy(function (childNode) {
+                                                                     if (childNode.get('ObjectElement') == selectElement) {
+                                                                        var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                                                        domTreeView.getSelectionModel().select(record);
+                                                                        var path = record.getPath();
+                                                                        domTreeView.expandPath(path);
+                                                                     }
+                                                                  }, this);//5
+                                                               }
+                                                           },
+                                                           itemkeydown:function( tree, record, item, index, e, eOpts ){
+                                                               var nodeText = record.data.text;
+                                                               clickElement = record.data.ObjectElement;
+                                                               if (e.keyCode == 46){ // delete element
+                                                                     if (  (selectElement!=null)
+                                                                          && (selectElement.tagName!="BODY")
+                                                                          && (selectElement.tagName!="HTML")
+                                                                          && (selectElement.tagName!="HEAD")
+                                                                         ) {
+                                                                             var parentEl = selectElement.parentElement;
+                                                                             selectElement.remove();
+                                                                             selectElement = parentEl;
+                                                                             viewPropertyInfo(selectElement); // показать свойства выбранного элемента
+                                                                             domHTMLTreeStory.getRootNode().removeAll();
+                                                                             domHTMLTreeStory.setRootNode(getDOMtree());
+                                                                             var domTreeView = Ext.getCmp('domTreeView');
+                                                                             var startNode = domTreeView.getRootNode();
+                                                                             startNode.cascadeBy(function (childNode) {
+                                                                                 if (childNode.get('ObjectElement') == selectElement) {
+                                                                                    var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                                                                    domTreeView.getSelectionModel().select(record);
+                                                                                    var path = record.getPath();
+                                                                                    domTreeView.expandPath(path);
+                                                                                 }
+                                                                             }, this);
+                                                                      }
+                                                               }
+                                                           },
+                                                           itemdblclick : function(tree, record, item, index, e, options) {
+                                                               var nodeText = record.data.text;
+                                                               clickElement = record.data.ObjectElement;
+                                                               selectElement = record.data.ObjectElement;
+                                                               dblClickElement();
+                                                           },
+                                                           itemcontextmenu : function(view, r, node, index, event) {
+                                                                event.stopEvent();
+                                                                Ext.create('Ext.menu.Menu', {
+                                                                    items : [
+                                                                        {
+                                                                            text : 'Font',
+                                                                            menu: [
+                                                                                {text : 'delete font-size', listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){ selectElement.style.removeProperty("font-size"); }
+                                                                                } } },
+                                                                                {text : 'font-size: 8px;',size:"8px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 10px;',size:"10px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 12px;',size:"12px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 14px;',size:"14px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 16px;',size:"14px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 18px;',size:"18px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                                {text : 'font-size: 20px;',size:"20px", listeners: { click: function(e) {
+                                                                                    if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                                } } },
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }).showAt(event.getXY());
+                                                                return false;
+                                                           },
+                                                       }
+                                                   }
+
+                                               ]
+                                          },{
                                                xtype: 'tabpanel',
                                                title: 'Propery',
                                                region: 'south',
