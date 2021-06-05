@@ -22,24 +22,25 @@
          var tagInfoList={};
          var structToArr = function( componentListJson,tagInfoList ){
              for(var key in componentListJson){
-                if (componentListJson[key].children){
-                   for( var subKey in componentListJson[key].children){
-                      var info = componentListJson[key].children[subKey];
-                       var keyRes = info.tagName;
-                       if ( (info["property"]) && (info["property"]["cmptype"])) {
-                          keyRes+="-"+info["property"]["cmptype"];
-                       }
-                       tagInfoList[keyRes]={};
-                       if (info["property"])  tagInfoList[keyRes]["property"]=info["property"];
-                       if (info["propertyVariant"])  tagInfoList[keyRes]["propertyVariant"]=info["propertyVariant"];
-                       if (info["text"])  tagInfoList[keyRes]["text"]=info["text"];
-                       if (info["tagName"])  tagInfoList[keyRes]["tagName"]=info["tagName"];
-                       if (info["innerHtmlToCaption"])  tagInfoList[keyRes]["innerHtmlToCaption"]=info["innerHtmlToCaption"];
-                       if (info["innerHTML"])  tagInfoList[keyRes]["innerHTML"]=info["innerHTML"];
-                       if (info["parentTag"])  tagInfoList[keyRes]["parentTag"]=info["parentTag"];
-                       if (info["class"])  tagInfoList[keyRes]["class"]=info["class"];
-                   }
-                }
+                 var info = componentListJson[key];
+                 var keyRes = info.tagName;
+                 if ( (info["property"]) && (info["property"]["cmptype"])) {
+                    keyRes+="-"+info["property"]["cmptype"];
+                 }
+                 if (keyRes === "undefined") continue;
+                 if (info["tagName"] === "undefined") continue;
+                 tagInfoList[keyRes]={};
+                 if (info["property"])  tagInfoList[keyRes]["property"]=info["property"];
+                 if (info["propertyVariant"])  tagInfoList[keyRes]["propertyVariant"]=info["propertyVariant"];
+                 if (info["text"])  tagInfoList[keyRes]["text"]=info["text"];
+                 if (info["tagName"])  tagInfoList[keyRes]["tagName"]=info["tagName"];
+                 if (info["innerHtmlToCaption"])  tagInfoList[keyRes]["innerHtmlToCaption"]=info["innerHtmlToCaption"];
+                 if (info["innerHTML"])  tagInfoList[keyRes]["innerHTML"]=info["innerHTML"];
+                 if (info["parentTag"])  tagInfoList[keyRes]["parentTag"]=info["parentTag"];
+                 if (info["class"])  tagInfoList[keyRes]["class"]=info["class"];
+                 if (componentListJson[key].children) {
+                    structToArr( componentListJson[key].children, tagInfoList );
+                 }
              }
          }
          structToArr( componentListJson, tagInfoList );
@@ -70,22 +71,14 @@
                                 {text : 'iframe Designer On/Off',
                                  listeners: {
                                         click: function() {
-                                            if (ContentEditorDocume.document.designMode == 'on' ){
-                                                  ContentEditorDocume.document.designMode = 'off'
-                                            } else {
-                                                  ContentEditorDocume.document.designMode = 'on'
-                                            }
+                                            window.iframe_Designer_On_Off()
                                         }
                                     }
                                 },
                                 { text: 'iframe Scroll On/Off',
                                   listeners: {
                                         click: function() {
-                                            if ( ContentEditorDocumeIframe.getAttribute("scrolling")){
-                                                ContentEditorDocumeIframe.removeAttribute("scrolling");
-                                            } else {
-                                                ContentEditorDocumeIframe.setAttribute("scrolling", "no");
-                                            }
+                                           window.iframe_Scroll_On_Off();
                                         }
                                     }
                                 }
@@ -161,7 +154,7 @@
                                 region: 'west',
                                 width: 300,
                                 split: true,
-                                items: [  {
+                                items: [     {
                                                title: 'DOM tree',
                                                region: 'north',
                                                width: 350,
@@ -185,8 +178,15 @@
                                                                }
                                                           }
                                                           clickElement.classList.add("selectElement");
+                                                          viewPropertyInfo(selectElement); // показать свойства выбранного элемента
                                                        } else {
+                                                          if (testParentTag(clickElement, NewObjectElement ) == false){
+                                                            alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+clickElement.tagName)
+                                                            NewObjectElement = null;
+                                                            return;
+                                                          }
                                                           clickElement.appendChild(NewObjectElement);
+                                                          viewPropertyInfo(NewObjectElement); // показать свойства выбранного элемента
                                                           selectElement = NewObjectElement;
                                                           NewObjectElement = null;
                                                           // перестроить DOM дерево
@@ -204,12 +204,77 @@
                                                           }, this);//5
                                                        }
                                                    },
+                                                   itemkeydown:function( tree, record, item, index, e, eOpts ){
+                                                       var nodeText = record.data.text;
+                                                       clickElement = record.data.ObjectElement;
+                                                       if (e.keyCode == 46){ // delete element
+                                                             if (  (selectElement!=null)
+                                                                  && (selectElement.tagName!="BODY")
+                                                                  && (selectElement.tagName!="HTML")
+                                                                  && (selectElement.tagName!="HEAD")
+                                                                 ) {
+                                                                     var parentEl = selectElement.parentElement;
+                                                                     selectElement.remove();
+                                                                     selectElement = parentEl;
+                                                                     viewPropertyInfo(selectElement); // показать свойства выбранного элемента
+                                                                     domHTMLTreeStory.getRootNode().removeAll();
+                                                                     domHTMLTreeStory.setRootNode(getDOMtree());
+                                                                     var domTreeView = Ext.getCmp('domTreeView');
+                                                                     var startNode = domTreeView.getRootNode();
+                                                                     startNode.cascadeBy(function (childNode) {
+                                                                         if (childNode.get('ObjectElement') == selectElement) {
+                                                                            var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                                                            domTreeView.getSelectionModel().select(record);
+                                                                            var path = record.getPath();
+                                                                            domTreeView.expandPath(path);
+                                                                         }
+                                                                     }, this);
+                                                              }
+                                                       }
+                                                   },
                                                    itemdblclick : function(tree, record, item, index, e, options) {
                                                        var nodeText = record.data.text;
                                                        clickElement = record.data.ObjectElement;
                                                        selectElement = record.data.ObjectElement;
                                                        dblClickElement();
-                                                   }
+                                                   },
+                                                   itemcontextmenu : function(view, r, node, index, event) {
+                                                        event.stopEvent();
+                                                        Ext.create('Ext.menu.Menu', {
+                                                            items : [
+                                                                {
+                                                                    text : 'Font',
+                                                                    menu: [
+                                                                        {text : 'delete font-size', listeners: { click: function(e) {
+                                                                            if (selectElement != null ){ selectElement.style.removeProperty("font-size"); }
+                                                                        } } },
+                                                                        {text : 'font-size: 8px;',size:"8px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 10px;',size:"10px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 12px;',size:"12px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 14px;',size:"14px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 16px;',size:"14px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 18px;',size:"18px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                        {text : 'font-size: 20px;',size:"20px", listeners: { click: function(e) {
+                                                                            if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
+                                                                        } } },
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }).showAt(event.getXY());
+                                                        return false;
+                                                   },
                                                }
                                            },{
                                                xtype: 'tabpanel',
@@ -395,16 +460,33 @@
               var clickElement  = null;
               var TmpElementSrc = null;
               var TmpElementSrc = null;
-              ContentEditorDocumeIframe.src = "report.html";
+              ContentEditorDocumeIframe.src = "";
               ContentEditorDocumeIframe.setAttribute("scrolling", "no");
+
+       //     selectElement=ContentEditorDocume.document.getElementsByTagName('BODY')[0];
               ContentEditorDocumeIframe.onload = function () {
                   ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
                   ContentEditorDocume.document.designMode = 'off';
+                  // ContentEditorDocume.document.write(   getTextUrl('report.html') +  getTextUrl('contextmenu.html') );
+                  ContentEditorDocume.document.write(   getTextUrl('report.html') );
+                    if (ContentEditorDocume.document.addEventListener) {
+                        ContentEditorDocume.document.addEventListener('contextmenu', function(event) {
+                            // console.log("event",event);
+                            event.preventDefault();
+                        }, false);
+                    } else {
+                        ContentEditorDocume.document.attachEvent('oncontextmenu', function() {
+                            console.log("e", e );
+                            window.event.returnValue = false;
+                        });
+                    }
                   TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
                   var elementsSrc = TmpElementSrc.querySelectorAll('*');
                   body = elementsSrc;
                   for (var i = 0; i < body.length; i++) {
-                      InitAttributesObject(body[i]);
+                      if ( !body[i].getAttribute("DeletTag")){
+                         InitAttributesObject(body[i]);
+                      }
                   }
                   domHTMLTreeStory.getRootNode().removeAll();
                   domHTMLTreeStory.setRootNode(getDOMtree());
@@ -529,24 +611,18 @@
                    }
                    selectElement = clickElement;
                    if ((event.button == 0 ) && (NewObjectElement !== null)) {
-                            var keyNewTag = NewObjectElement.tagName.toLowerCase();
-                            if (NewObjectElement.getAttribute("cmptype")){
-                               keyNewTag+="-"+NewObjectElement.getAttribute("cmptype");
-                            }
-                            if (tagInfoList[keyNewTag]){
-                                 if (tagInfoList[keyNewTag].parentTag){
-                                    if ((!tagInfoList[keyTag])||(tagInfoList[keyNewTag].tagName != tagInfoList[keyNewTag].parentTag)){
-                                       alert('Элемент '+ tagInfoList[keyNewTag].tagName+ ' можно добавлять только в '+tagInfoList[keyNewTag].parentTag)
-                                       return;
-                                    }
-                                 }
-                            }
+                      if (testParentTag(selectElement, NewObjectElement ) == false){
+                        alert('Нельзя добавить '+NewObjectElement.tagName+' в родителя '+selectElement.tagName)
+                        NewObjectElement = null;
+                        return;
+                      }
                       if (NewObjectElement.style.position == "absolute"){
                         NewObjectElement.style.left = event.layerX;
                         NewObjectElement.style.top = event.layerY-8;
                       }
                       clickElement.appendChild(NewObjectElement);
                       selectElement = NewObjectElement;
+                      viewPropertyInfo(selectElement); // показать свойства выбранного элемента
                       NewObjectElement = null;
                       // перестроить DOM дерево
                       domHTMLTreeStory.getRootNode().removeAll();
@@ -562,6 +638,9 @@
                       return;
                    }
                    if ( event.button == 0 ) {
+                       if ( TmpElementSrc.getAttribute("DeletTag")){
+                           return;
+                       }
                        var elementsSrc = TmpElementSrc.querySelectorAll('*');
                        for (var i = 0; i < elementsSrc.length; i++) {
                           if (elementsSrc[i].classList.contains('selectElement')) {
@@ -594,7 +673,9 @@
                           && (selectElement!=null)
                           && (selectElement.tagName!="BODY")
                          ) {
+                         var parentEl = selectElement.parentElement;
                          selectElement.remove();
+                         selectElement = parentEl;
                          domHTMLTreeStory.getRootNode().removeAll();
                          domHTMLTreeStory.setRootNode(getDOMtree());
                       }
@@ -794,6 +875,64 @@
                   elements.outerHTML = bodyText;
                   return elements;
               }
+
+              window.contextMenuExec=function(btn) {
+                  console.log("contextMenuExec",btn);
+              }
+
+             window.iframe_Designer_On_Off = function() {
+                 if (ContentEditorDocume.document.designMode == 'on' ){
+                       ContentEditorDocume.document.designMode = 'off'
+                 } else {
+                       ContentEditorDocume.document.designMode = 'on'
+                 }
+             }
+             window.iframe_Scroll_On_Off = function() {
+                 if ( ContentEditorDocumeIframe.getAttribute("scrolling")){
+                     ContentEditorDocumeIframe.removeAttribute("scrolling");
+                 } else {
+                     ContentEditorDocumeIframe.setAttribute("scrolling", "no");
+                 }
+             }
+             window.contextMenuSetFontSize=function(btn) {
+                if (selectElement != null ){
+                    console.log("contextMenuExec",btn.innerHTML);
+                    console.log("selectElement",selectElement);
+                    selectElement.style.fontSize = btn.innerHTML;
+                }
+             }
+
+             testParentTag = function(selectElement, NewObjectElement ){
+                  // информация о компоненте
+                  var keyTag =  NewObjectElement.tagName.toLowerCase();
+                  var parentTag =  selectElement.tagName.toLowerCase();
+
+                  if (( NewObjectElement.getAttribute("cmptype"))&&(NewObjectElement.getAttribute("cmptype")!=='tmp')){
+                      keyTag+="-"+ NewObjectElement.getAttribute("cmptype");
+                  }
+                  if (tagInfoList[keyTag]){
+                     if (tagInfoList[keyTag].parentTag) {
+                         var resultTest = false;
+                         for ( var ind in tagInfoList[keyTag].parentTag) {
+                            if ( tagInfoList[keyTag].parentTag[ind] == parentTag ){
+                               resultTest = true;
+                            }
+                         }
+                         return resultTest;
+                     }
+                  }
+                return true;
+             }
+             viewPropertyInfo = function(selectElement) {
+                 var keyTag = selectElement.tagName.toLowerCase();
+                 if (( selectElement.getAttribute("cmptype")) && (selectElement.getAttribute("cmptype")!=='tmp')){
+                      keyTag+="-"+ selectElement.getAttribute("cmptype");
+                 }
+                 if ((tagInfoList[keyTag]) && (tagInfoList[keyTag].propertyVariant)) {
+                     var tabTagProperty = Ext.getCmp('tabTagProperty');
+                     console.log( "tagInfoList[keyTag].propertyVariant",tagInfoList[keyTag].propertyVariant);
+                 }
+             }
           });
     </script>
 </head>

@@ -20,7 +20,7 @@
           "left": 10,
           "top": 10,
           "width": "100px",
-          "height": "60px"
+          "height": "20px"
         },
         "property": {},
         "innerHtmlToCaption": false,
@@ -35,7 +35,7 @@
           "left": 10,
           "top": 10,
           "width": "100px",
-          "height": "60px"
+          "height": "20px"
         },
         "property": {},
         "class": [
@@ -53,7 +53,7 @@
           "left": 10,
           "top": 10,
           "width": "100px",
-          "height": "60px"
+          "height": "20px"
         },
         "property": {},
         "class": [
@@ -74,7 +74,7 @@
         "leaf": true,
         "text": "cmpScript",
         "tagName": "cmp-script",
-        "innerHTML": "<!--[CDATA[ \n  \n  \n  ]]-->",
+        "innerHTML": "<![CDATA[ \n  \n  \n  ]]>",
         "propertyVariant": {}
       },{
         "leaf": true,
@@ -82,8 +82,9 @@
         "tagName": "cmp-label",
         "innerHtmlToCaption": true,
         "innerHTML": "cmpLabel",
-        "propertyVariant": {}
-      },
+        "propertyVariant": {},
+        "notContentInnerHTML": true
+       },
        {
         "leaf": true,
         "text": "cmpButton",
@@ -97,7 +98,8 @@
        "width": "100px",
        "height": "20px",
         "propertyVariant": {"name":"string" },
-        "propertyMandatory": {"name":"string"}
+        "propertyMandatory": {"name":"string"},
+        "notContentInnerHTML": true
       },
        {
         "leaf": true,
@@ -111,7 +113,8 @@
         "height": "20px",
         "propertyVariant": {"name":"string","clearbutton": [null,"true","false"],"onbuttonclick": "event"
         },
-        "propertyMandatory": {"name":"string"}
+        "propertyMandatory": {"name":"string"},
+        "notContentInnerHTML": true
       },
       {
         "leaf": true,
@@ -121,8 +124,9 @@
         "innerHTML": "",
         "propertyVariant": {"name":"string" },
         "propertyMandatory": {"name":"string"},
-        "parentTag": "cmp-text-area",
-        "class": []
+        "parentTag": ["cmp-text-area"],
+        "class": [],
+        "notContentInnerHTML": true
       },
       {
         "leaf": true,
@@ -135,8 +139,9 @@
                             "enabled":[null,"true","false"]
         },
         "propertyMandatory": {"name":"string"},
-        "parentTag": "cmp-edit",
-        "class": []
+        "parentTag": ["cmp-edit"],
+        "class": [],
+        "notContentInnerHTML": true
       },
       {
         "leaf": true,
@@ -148,8 +153,9 @@
                              "emptyMask":["true","false",null],"typeMask":["datetime","date","time",null],"readonly": [null,"true","false"]
         },
         "propertyMandatory": {"name":"string"},
-        "parentTag": "cmp-date-edit",
-        "class": []
+        "parentTag": ["cmp-date-edit"],
+        "class": [],
+        "notContentInnerHTML": true
       },
       {
         "text": "DataBase",
@@ -173,8 +179,9 @@
               "innerHTML": "",
               "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":"{g1:random()}" },
               "propertyMandatory": {"name":"string"} ,
-              "parentTag": "cmp-data-set",
-              "class": ["D3_WebBuilder_NotVisibleElement"]
+              "parentTag": ["cmp-data-set"],
+              "class": ["D3_WebBuilder_NotVisibleElement"],
+              "notContentInnerHTML": true
             },
             {
               "leaf": true,
@@ -187,7 +194,7 @@
                                 "max_exec_time":"number"
               },
               "propertyMandatory": {"name":"string"} ,
-              "parentTag": "",
+              "parentTag": [""],
               "class": ["D3_WebBuilder_NotVisibleElement"]
             },
             {
@@ -197,19 +204,96 @@
               "innerHTML": "",
               "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","{name}_Ctrl:caption"],"get":"random" ,"len":"number" },
               "propertyMandatory": {"name":"string"},
-              "parentTag": "cmp-action",
-              "class": ["D3_WebBuilder_NotVisibleElement"]
+              "parentTag": ["cmp-action"],
+              "class": ["D3_WebBuilder_NotVisibleElement"],
+              "notContentInnerHTML": true
             }
         ]
       }
     ]
   },
   {
-    "text": "M2",
+    "text": "HTML",
     "leaf": false,
     "expanded": true,
     "children": [
-
+        {
+          "leaf": true,
+          "text": "DIV",
+          "tagName": "div",
+          "innerHtmlToCaption": false,
+          "innerHTML": "div_block"
+        },
+        {
+          "leaf": true,
+          "text": "TEXTAREA",
+          "tagName": "textarea",
+          "innerHtmlToCaption": false,
+          "innerHTML": "div_block"
+        },
+        {
+          "leaf": true,
+          "text": "INPUT",
+          "tagName": "input",
+          "innerHtmlToCaption": false,
+          "innerHTML": "",
+          "value": "input",
+          "notContentInnerHTML": true
+        },
+        {
+          "text": "TABLE",
+          "leaf": false,
+          "expanded": true,
+          "children": [
+              {
+                "leaf": true,
+                "text": "TABLE",
+                "tagName": "table",
+                "innerHtmlToCaption": false,
+                "innerHTML": "<tbody><tr><td>___</td></tr></tbody>"
+              },
+              {
+                "leaf": true,
+                "text": "TR",
+                "tagName": "tr",
+                "parentTag": ["tbody","thead","tfoot"],
+                "innerHtmlToCaption": false,
+                "innerHTML": "<td>___</td>"
+              },
+              {
+                "leaf": true,
+                "text": "TD",
+                "tagName": "td",
+                "parentTag": ["tr"],
+                "innerHtmlToCaption": false,
+                "innerHTML": "<td>___</td>"
+              },
+              {
+                "leaf": true,
+                "text": "THEAD",
+                "tagName": "thead",
+                "parentTag": ["table"],
+                "innerHtmlToCaption": false,
+                "innerHTML": "<tr><td>___</td></tr>"
+              },
+              {
+                "leaf": true,
+                "tagName": "tbody",
+                "parentTag": ["table"],
+                "text": "TBODY",
+                "innerHtmlToCaption": false,
+               "innerHTML": "<tr><td>___</td></tr>"
+              },
+              {
+                "leaf": true,
+                "text": "TFOOT",
+                "tagName": "tfoot",
+                "parentTag": ["table"],
+                "innerHtmlToCaption": false,
+                "innerHTML": "<tr><td>___</td></tr>"
+              }
+          ]
+       }
     ]
   }
 ]
