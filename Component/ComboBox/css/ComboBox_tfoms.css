@@ -1,0 +1,77 @@
+.ctrl_combobox{
+    position: relative;
+    padding-right: 22px;
+    display: inline-block;
+    border-radius: 3px;
+}
+.ctrl_combobox.ctrl_disable{
+    cursor:default;
+}
+.ctrl_combobox.ctrl_warning input
+{
+    background-color: #FDF6B6;
+}
+div.cmbb-button
+{
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: url('~CmpComboBox/button') no-repeat transparent;
+    cursor: pointer;
+}
+div.cmbb-button:active
+{
+    background-position: 0 -22px;
+}
+.ctrl_combobox.ctrl_disable div.cmbb-button
+{
+    background-position: 0 -44px;
+    cursor:default;
+}
+div.cmbb-droplist{
+    min-width:  100%;
+    display: none;
+    position: absolute;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    border: 1px solid #9696AA;
+    text-align: left;
+    z-index: 1;
+    background: #FFFFFF;
+    margin: -1px 0 0 -1px;
+}
+div.cmbb-droplist table{
+    margin: 0px;
+    overflow: hidden;
+    width: 100%;
+    text-align: left;
+}
+div.cmbb-droplist table tr{
+    background-color: white;
+    cursor: pointer;
+}
+div.cmbb-droplist table tr td{
+    padding: 4px 6px;
+}
+div.cmbb-droplist table tr.combo-item-selected{
+    background: rgb(233,255,227); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(233,255,227,1) 0%, rgba(221,246,218,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(233,255,227,1)), color-stop(100%,rgba(221,246,218,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* W3C */
+}
+div.cmbb-droplist table tr:hover{
+    background: rgb(233,255,227); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(233,255,227,1) 0%, rgba(221,246,218,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(233,255,227,1)), color-stop(100%,rgba(221,246,218,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(233,255,227,1) 0%,rgba(221,246,218,1) 100%); /* W3C */
+    cursor: pointer;
+}

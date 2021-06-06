@@ -318,6 +318,24 @@
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
                                                                             ]
+                                                                        },{
+                                                                            text : 'Tree',
+                                                                            menu: [
+                                                                                {text : 'Обновить дерево',iconCls:'deleteIcon', listeners: { click: function(e) {
+                                                                                      domHTMLTreeStory.getRootNode().removeAll();
+                                                                                      domHTMLTreeStory.setRootNode(getDOMtree());
+                                                                                      var domTreeView = Ext.getCmp('domTreeView');
+                                                                                      var startNode = domTreeView.getRootNode();
+                                                                                      startNode.cascadeBy(function (childNode) {
+                                                                                         if (childNode.get('ObjectElement') == selectElement) {
+                                                                                            var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                                                                            domTreeView.getSelectionModel().select(record);
+                                                                                            var path = record.getPath();
+                                                                                            domTreeView.expandPath(path);
+                                                                                         }
+                                                                                      }, this); // 1
+                                                                                } } }
+                                                                            ]
                                                                         }
                                                                     ]
                                                                 }).showAt(event.getXY());
@@ -499,6 +517,13 @@
                                                   if (record.data.staticID){
                                                       NewObjectElement.id = record.data.staticID;
                                                   }
+                                                  if (record.data.propertyVariant){
+                                                      for(var key in record.data.propertyVariant){
+                                                         if (key == "name") {
+                                                             NewObjectElement.setAttribute("name", record.data.text+getRandomInt(999999));
+                                                         }
+                                                      }
+                                                  }
                                                   // --------------------------------------------------
                                                   // for(var key in record.data){
                                                   //    NewObjectElement.setAttribute(key, record.data[key]);
@@ -510,6 +535,8 @@
                                                   if (record.data.value) {
                                                      NewObjectElement.setAttribute("value",record.data.value);
                                                   }
+
+                                                  console.log("NewObjectElement",NewObjectElement);
                                               }
                                           }
                                       }
@@ -607,7 +634,7 @@
                   domHTMLTreeStory.setRootNode(getDOMtree());
               }
               var LoadWebForm = function() {
-                       newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
+                       newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=800,height=600,left=320,top=240');
                        newWin.onload = function() {
                           var textEdit =  newWin.document.getElementById("contentText");
                           newWin.document.getElementById("btnSave").onclick = function(){
@@ -624,13 +651,16 @@
                                   bodyText = bodyText.replaceAll('cmpDateEdit', toWorldsCase('cmpDateEdit'));
                                   bodyText = bodyText.replaceAll('cmpTextArea', toWorldsCase('cmpTextArea'));
                                   bodyText = bodyText.replaceAll('cmpScript', toWorldsCase('cmpScript'));
+                                  bodyText = bodyText.replaceAll('cmpComboBox', toWorldsCase('cmpComboBox'));
+                                  bodyText = bodyText.replaceAll('cmpComboItem', toWorldsCase('cmpComboItem'));
                                   bodyText = bodyText.replaceAll('cmpDependences', toWorldsCase('cmpDependences'));
                                   console.log(bodyText);
                               var parser = new DOMParser();
                               var xmlDoc = parser.parseFromString(bodyText, "text/xml");
-                              //var xmlDoc = parser.parseFromString(bodyText,  "text/html");
+                              // var xmlDoc = parser.parseFromString(bodyText,  "text/html");
                               x = xmlDoc.documentElement;
                               domList = xmlDoc.querySelectorAll('*')
+                              /*
                               for(var ind in domList){
                                  if ( (domList[ind].getAttribute)&&(domList[ind].getAttribute("caption") != null) ) {
                                      if (domList[ind].tagName == 'DIV') continue;
@@ -647,9 +677,8 @@
                                          console.log("domList[ind].tagName",domList[ind].tagName);
                                          console.log(tagInfoList[domList[ind].tagName]);
                                  }
-
                               }
-
+                              */
                               selectElement=ContentEditorDocume.document.getElementsByTagName('BODY')[0];
                               selectElement.outerHTML = new XMLSerializer().serializeToString(xmlDoc.documentElement);
 
@@ -703,6 +732,8 @@
                   bodyText = bodyText.replaceAll('cmp-date-edit', toCamelCase('cmp-date-edit'));
                   bodyText = bodyText.replaceAll('cmp-text-area', toCamelCase('cmp-text-area'));
                   bodyText = bodyText.replaceAll('cmp-dependences', toCamelCase('cmp-dependences'));
+                  bodyText = bodyText.replaceAll('cmp-combo-box', toCamelCase('cmp-combo-box'));
+                  bodyText = bodyText.replaceAll('cmp-combo-item', toCamelCase('cmp-combo-item'));
 
                   // --------------------------------------------------
                   bodyText = bodyText.replaceAll('></cmpDataSetVar>', '/>');

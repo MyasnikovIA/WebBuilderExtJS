@@ -109,14 +109,13 @@
         "text": "cmpButton",
         "tagName": "cmp-button",
         "property": {},
-        "innerHtmlToCaption": true,
-        "innerHTML": "cmpButtom",
-         "class": [
-          "D3_WebBuilder_button"
-        ],
-       "width": "100px",
-       "height": "20px",
-        "propertyVariant": {"name":"string" },
+        "innerHtmlToCaption": false,
+        "innerHTML": "",
+         "caption": "cmpButton",
+        "class": [],
+        "width": "100px",
+        "height": "20px",
+        "propertyVariant": {"name":"string","width": "number","caption": "string" },
         "propertyMandatory": {"name":"string"},
         "notContentInnerHTML": true
       },
@@ -135,15 +134,43 @@
         "propertyMandatory": {"name":"string"},
         "notContentInnerHTML": true
       },
+       {
+        "leaf": true,
+        "text": "cmpComboBox",
+        "tagName": "cmp-combo-box",
+        "property": {},
+        "innerHtmlToCaption": false,
+        "innerHTML": "",
+         "class": [],
+        "width": "100px",
+        "height": "20px",
+        "propertyVariant": {"name":"string","width": "number"},
+        "propertyMandatory": {"name":"string"},
+        "notContentInnerHTML": true
+      },
+       {
+        "leaf": true,
+        "text": "cmpComboItem",
+        "tagName": "cmp-combo-item",
+        "property": {},
+        "innerHtmlToCaption": false,
+        "innerHTML": "",
+        "class": [],
+        "width": "100px",
+        "height": "20px",
+        "propertyVariant": {"name":[null,""],"caption": "string","value":"string","repeat": [null,"0","1"],"dataset": "string","data":[null,"value:ID;caption:PK_NAME"]},
+        "propertyMandatory": {"name":"string"},
+        "notContentInnerHTML": true,
+        "parentTag": ["cmp-combo-box"]
+       },
       {
         "leaf": true,
         "text": "cmpTextArea",
         "tagName": "cmp-text-area",
         "innerHtmlToValue": true,
         "innerHTML": "",
-        "propertyVariant": {"name":"string" },
+        "propertyVariant": {"name":"string", "value":"string" },
         "propertyMandatory": {"name":"string"},
-        "parentTag": ["cmp-text-area"],
         "class": [],
         "notContentInnerHTML": true
       },
@@ -158,7 +185,6 @@
                             "enabled":[null,"true","false"]
         },
         "propertyMandatory": {"name":"string"},
-        "parentTag": ["cmp-edit"],
         "class": [],
         "notContentInnerHTML": true
       },
@@ -172,7 +198,6 @@
                              "emptyMask":["true","false",null],"typeMask":["datetime","date","time",null],"readonly": [null,"true","false"]
         },
         "propertyMandatory": {"name":"string"},
-        "parentTag": ["cmp-date-edit"],
         "class": [],
         "notContentInnerHTML": true
       },
@@ -183,7 +208,6 @@
         "expanded": true,
         "children": [
           {
-
               "leaf": true,
               "text": "cmpDataSet",
               "tagName": "cmp-data-set",
