@@ -4,7 +4,7 @@
     <link href="lib/ExtJS_6.0.0/theme-classic-all.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-classic/resources/theme-classic-all.css"
           rel="stylesheet"/>
-
+    <link href="builder.css" rel="stylesheet"/>
     <script type="text/javascript" src="lib/ExtJS_6.0.0/ext-all.js"></script>
     <script type="text/javascript" src="lib/system.js"></script>
     <script type="text/javascript">
@@ -293,28 +293,28 @@
                                                                         {
                                                                             text : 'Font',
                                                                             menu: [
-                                                                                {text : 'delete font-size', listeners: { click: function(e) {
+                                                                                {text : 'delete font-size',iconCls:'deleteIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){ selectElement.style.removeProperty("font-size"); }
                                                                                 } } },
-                                                                                {text : 'font-size: 8px;',size:"8px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 8px;',size:"8px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 10px;',size:"10px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 10px;',size:"10px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 12px;',size:"12px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 12px;',size:"12px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 14px;',size:"14px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 14px;',size:"14px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 16px;',size:"14px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 16px;',size:"14px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 18px;',size:"18px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 18px;',size:"18px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
-                                                                                {text : 'font-size: 20px;',size:"20px", listeners: { click: function(e) {
+                                                                                {text : 'font-size: 20px;',size:"20px",iconCls:'fontIcon', listeners: { click: function(e) {
                                                                                     if (selectElement != null ){  selectElement.style.fontSize = e.config.size; }
                                                                                 } } },
                                                                             ]
@@ -341,13 +341,20 @@
                                                           height: 20,
                                                            width: '100%',
                                                              id : 'foundTagProperty',
-                                                           emptyText: 'Найти атрибут тэга'
+                                                           emptyText: 'Найти атрибут тэга',
+                                                           listeners: {
+                                                                specialkey: function(f,e){
+                                                                   if (e.getKey() == e.ENTER) {
+                                                                      viewPropertyInfo(selectElement);
+                                                                   }
+                                                                }
+                                                            }
                                                         },
                                                         {
-                                                          id :'tabTagProperty',
+                                                          xtype: 'panel',
+                                                          id: 'tabTagProperty',
                                                           width: "100%",
                                                           height: 300,
-                                                          xtype: 'panel',
                                                           html: 'Список свойств propertyVariant'
                                                         }
                                                     ]
@@ -467,7 +474,8 @@
                                               itemclick : function(tree, record, item, index, e, options) {
                                                   // var cloneItem = record.data.slice()
                                                   var tagName = record.data.tagName;
-                                                  //console.log(record.data);
+                                                  console.log(record.data);
+                                                  // ElementID
                                                   if (!tagName) {return;}
                                                   NewObjectElement = ContentEditorDocume.document.createElement( tagName );
                                                   if (record.data.style) {
@@ -488,6 +496,20 @@
                                                   if (record.data.innerHTML){
                                                       NewObjectElement.innerHTML=record.data.innerHTML;
                                                   }
+                                                  if (record.data.staticID){
+                                                      NewObjectElement.id = record.data.staticID;
+                                                  }
+                                                  // --------------------------------------------------
+                                                  // for(var key in record.data){
+                                                  //    NewObjectElement.setAttribute(key, record.data[key]);
+                                                  // }
+                                                  // --------------------------------------------------
+                                                  if (record.data.caption) {
+                                                     NewObjectElement.setAttribute("caption",record.data.caption);
+                                                  }
+                                                  if (record.data.value) {
+                                                     NewObjectElement.setAttribute("value",record.data.value);
+                                                  }
                                               }
                                           }
                                       }
@@ -500,6 +522,8 @@
 
                     //----------------------------------------------------------------------------------------
                     // loadScript("lib/main.js").then(function(){ },function(error){ console.log(error); });
+                    //
+                    // window.parent.loadScript("component.js").then(function(){ },function(error){ console.log(error); });
                     //----------------------------------------------------------------------------------------
                     var ReadHtmlElementId = 0;
                     var ReadHtmlElement = function(elems,arr) {
@@ -569,6 +593,8 @@
                             window.event.returnValue = false;
                         });
                     }
+                  window.loadScriptIframe("component.js",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
+                  window.loadCSSIFrame("component.css",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
                   TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
                   var elementsSrc = TmpElementSrc.querySelectorAll('*');
                   body = elementsSrc;
@@ -1013,15 +1039,61 @@
                   }
                 return true;
              }
+
+              changeElementVal = function( el ){  // функция изменения  свойства элемента
+                 var nam = el.getAttribute("propname");
+                 if (el.value === 'null'){
+                    selectElement.removeAttribute(nam);
+                 }else{
+                    selectElement.setAttribute(nam,el.value);
+                    // try {
+                    //    selectElement[nam] = el.value;
+                    // } catch {
+                    //    selectElement.setAttribute(nam,el.value);
+                    // }
+                 }
+              }
+
+             // Прочитать список свойств  выбранного элемента
              viewPropertyInfo = function(selectElement) {
                  var keyTag = selectElement.tagName.toLowerCase();
                  if (( selectElement.getAttribute("cmptype")) && (selectElement.getAttribute("cmptype")!=='tmp')){
                       keyTag+="-"+ selectElement.getAttribute("cmptype");
                  }
                  if ((tagInfoList[keyTag]) && (tagInfoList[keyTag].propertyVariant)) {
+                     var foundTagProperty = Ext.getCmp('foundTagProperty');
+                     var srctxt = foundTagProperty.value.toLowerCase();
                      var tabTagProperty = Ext.getCmp('tabTagProperty');
-                     console.log( "tagInfoList[keyTag].propertyVariant",tagInfoList[keyTag].propertyVariant);
-                 }
+                     var opt = [];
+                     opt.push("<table>");
+                     for( var ind in tagInfoList[keyTag].propertyVariant){
+                        if (srctxt.length > 0 ) {
+                           if (ind.toLowerCase().indexOf(srctxt) == -1) continue;
+                        }
+                        var typ = tagInfoList[keyTag].propertyVariant[ind]
+                        var val = selectElement.getAttribute(ind)
+                        opt.push("<tr><td>");
+                        opt.push(ind);
+                        opt.push("</td>");
+                        opt.push("<td>");
+                        if (typ == "string") {
+                           opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                        } else if (typ == "number") {
+                           opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="number" />`);
+                        }else if (typeof typ === "object") {
+                           opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
+                           for(var subInd in typ) {
+                              opt.push(`<option value="${typ[subInd]}" />`);
+                           }
+                           opt.push(`</datalist>`);
+                           opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
+                        }
+                        opt.push("</td>");
+                        opt.push("</tr>");
+                     }
+                     opt.push("</table>");
+                     tabTagProperty.ariaEl.dom.innerHTML = opt.join("");
+                }
              }
           });
     </script>

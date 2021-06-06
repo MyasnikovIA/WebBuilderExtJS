@@ -3,6 +3,7 @@
     "text": "Report",
     "leaf": false,
     "expanded": true,
+    "iconCls":"reportsIcon",
     "children": [
       {
         "leaf": true,
@@ -13,10 +14,25 @@
       },
       {
         "leaf": true,
+        "text": "PrintSetup",
+        "tagName": "span",
+        "innerHtmlToCaption": false,
+        "notContentInnerHTML": true,
+        "innerHTML": "",
+        "staticID": "PrintSetup",
+        "style": {
+          "display": "none"
+        },
+        "propertyVariant": {"ps_paperData":"number","ps_marginBottom":"number","ps_marginRight":"number","ps_marginTop":"number",
+                           "ps_marginLeft":"number","ps_orientation": [null,"landscape","portrait"]}
+      },
+      {
+        "leaf": true,
         "text": "Text Block",
         "tagName": "div",
         "style": {
           "position": "absolute",
+          "left": 10,
           "left": 10,
           "top": 10,
           "width": "100px",
@@ -80,9 +96,12 @@
         "leaf": true,
         "text": "cmpLabel",
         "tagName": "cmp-label",
-        "innerHtmlToCaption": true,
-        "innerHTML": "cmpLabel",
-        "propertyVariant": {},
+        "innerHtmlToCaption": false,
+        "caption": "cmpLabe",
+        "innerHTML": "",
+        "propertyVariant": {"data": ["  ","caption:{dataname}"],"name":"string" ,
+          "caption": "string"
+        },
         "notContentInnerHTML": true
        },
        {
@@ -159,6 +178,7 @@
       },
       {
         "text": "DataBase",
+        "iconCls":"dataBaseIcon",
         "leaf": false,
         "expanded": true,
         "children": [
@@ -168,7 +188,7 @@
               "text": "cmpDataSet",
               "tagName": "cmp-data-set",
               "innerHTML": "cmpDataSet",
-              "propertyVariant": {},
+              "propertyVariant": {"name":"string","activateoncreate": [null,"false","true"],"compile": [null,"false","true"] },
               "class": ["D3_WebBuilder_NotVisibleElement"],
                "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r"
             },
@@ -177,7 +197,7 @@
               "text": "cmpDataSetVar",
               "tagName": "cmp-data-set-var",
               "innerHTML": "",
-              "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":"{g1:random()}" },
+              "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":[null,"g{name}"]},
               "propertyMandatory": {"name":"string"} ,
               "parentTag": ["cmp-data-set"],
               "class": ["D3_WebBuilder_NotVisibleElement"],
@@ -202,7 +222,8 @@
               "text": "cmpActionVar",
               "tagName": "cmp-action-var",
               "innerHTML": "",
-              "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","{name}_Ctrl:caption"],"get":"random" ,"len":"number" },
+              "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","ctrl:caption","{name}_Ctrl:caption"],
+                                  "property": "string","put":[null,"p{name}"],"get":[null,"g{name}"] ,"len":"number" },
               "propertyMandatory": {"name":"string"},
               "parentTag": ["cmp-action"],
               "class": ["D3_WebBuilder_NotVisibleElement"],
@@ -290,7 +311,8 @@
                 "tagName": "tfoot",
                 "parentTag": ["table"],
                 "innerHtmlToCaption": false,
-                "innerHTML": "<tr><td>___</td></tr>"
+                "innerHTML": "<tr><td>___</td></tr>",
+                "iconCls":"your_css_class"
               }
           ]
        }
