@@ -164,3 +164,66 @@
                 this.render();
              }
         });
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+
+/*
+    Переписать компоненты на шаблоны
+
+    <my-header></my-header>
+    <my-module>
+      <h2 slot="header">My Module</h2>
+    </my-module>
+*/
+class MyHeader extends HTMLElement {
+  constructor() {
+    super();
+    const headerTemplate = document.createElement('template');
+    headerTemplate.innerHTML = `
+      <style>
+        header {
+          background: black;
+          color: white;
+          padding: 2rem;
+        }
+      </style>
+      <header>
+        My Cool Website
+      </header>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(headerTemplate.content.cloneNode(true));
+  }
+
+}
+
+class MyModule extends HTMLElement {
+  constructor() {
+    super();
+    const moduleTemplate = document.createElement('template');
+    moduleTemplate.innerHTML = `
+      <style>
+        .module {
+           padding: 2rem;
+           background: pink;
+        }
+      </style>
+      <div class="module">
+        <slot name="header"></slot>
+      </div>
+    `;
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.appendChild(moduleTemplate.content.cloneNode(true));
+  }
+
+}
+
+window.customElements.define('my-header', MyHeader);
+window.customElements.define('my-module', MyModule);
+
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
