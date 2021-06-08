@@ -45,6 +45,15 @@
          }
          structToArr( componentListJson, tagInfoList );
 
+         var arrTagDst = [];
+         var arrTagStr = [];
+         for (var key in tagInfoList) {
+             if (key.indexOf('-') ==-1 ) continue;
+             arrTagDst.push( toCamelCase(key) );
+             arrTagStr.push( key );
+         }
+
+
          Ext.onReady(function() {
             var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
             var elementListTreeStory = Ext.create('Ext.data.TreeStore', { root: {} });
@@ -67,6 +76,27 @@
                     dock: 'top',
                     items: [
                         {
+                            text : 'File',
+                            menu: [
+                                {text : 'load form',
+                                 listeners: {
+                                        click: function() {
+                                            var urlPage = prompt("File name", 'report.html');
+                                            if(urlPage){
+                                                loadEmploePage(urlPage);
+                                            }
+                                        }
+                                    }
+                                },
+                                { text: 'Clear form',
+                                  listeners: {
+                                        click: function() {
+                                            loadEmploePage("");
+                                        }
+                                    }
+                                }
+                            ]
+                        },{
                             text : 'Edit',
                             menu: [
                                 {text : 'iframe Designer On/Off',
@@ -153,7 +183,7 @@
                                 xtype: 'panel',
                                 title: ' ',
                                 region: 'west',
-                                width: 300,
+                                width: 400,
                                 split: true,
                                 items: [ {
                                                title: 'DOM tree',
@@ -349,9 +379,10 @@
                                                xtype: 'tabpanel',
                                                title: 'Propery',
                                                region: 'south',
-                                               height: 400,
+                                               layout: 'fit',
+                                               autoScroll: true,
                                                items:[{
-                                                    title: 'Tag Property',
+                                                    title: 'Property',
                                                     items:[
                                                         {
                                                           xtype : 'textfield',
@@ -359,7 +390,7 @@
                                                           height: 20,
                                                            width: '100%',
                                                              id : 'foundTagProperty',
-                                                           emptyText: 'Найти атрибут тэга',
+                                                           emptyText: 'Found property',
                                                            listeners: {
                                                                 specialkey: function(f,e){
                                                                    if (e.getKey() == e.ENTER) {
@@ -369,71 +400,45 @@
                                                             }
                                                         },
                                                         {
-                                                          xtype: 'panel',
                                                           id: 'tabTagProperty',
+                                                          xtype: 'container',
                                                           width: "100%",
-                                                          height: 300,
-                                                          html: 'Список свойств propertyVariant'
+                                                          height: 248,
+                                                          overflowY: 'scroll',
+                                                          overflowX: 'scroll',
+                                                          flex: 1,             // take remaining available vert space
+                                                          html: 'Property',
                                                         }
                                                     ]
                                                 },{
-                                                      title: 'Tag Property',
+                                                      title: 'Styles',
                                                       items:[
                                                             {
+                                                              id : 'foundStyle',
                                                               xtype : 'textfield',
                                                               title : ' ',
                                                               height: 20,
-                                                               width: '100%',
-                                                                 id : 'foundProperty',
-                                                              emptyText: 'Найти свойство HTML'
-                                                            },
-                                                            {
-                                                              id :'tabProperty',
-                                                              width: "100%",
-                                                              height: 300,
-                                                              xtype: 'panel',
-                                                              html: 'Список свойств HTML Attribut'
-                                                            }
-                                                      ]
-                                                },{
-                                                    title: 'Style',
-                                                    items:[
-                                                            {
-                                                              xtype : 'textfield',
-                                                              title : ' ',
-                                                              height: 20,
-                                                              emptyText: 'Найти стиль',
-                                                               width: '100%',
-                                                                 id : 'foundStyle'
+                                                              width : '100%',
+                                                              emptyText: 'Found style',
+                                                              listeners: {
+                                                                specialkey: function(f,e){
+                                                                   if (e.getKey() == e.ENTER) {
+                                                                      viewPropertyInfo(selectElement);
+                                                                   }
+                                                                }
+                                                              }
                                                             },
                                                             {
                                                               id :'tabStyle',
                                                               width: "100%",
-                                                              height: 300,
-                                                              xtype: 'panel',
-                                                              html: 'Список свойств HTML Style'
+                                                              xtype: 'container',
+                                                              height: 248,
+                                                              overflowY: 'scroll',
+                                                              overflowX: 'scroll',
+                                                              html: 'Styles'
                                                             }
                                                       ]
-                                                },{
-                                                    title: 'Event',
-                                                    items:[
-                                                            {
-                                                              xtype : 'textfield',
-                                                              title : ' ',
-                                                              emptyText: 'Найти событие',
-                                                              height: 20,
-                                                               width: '100%',
-                                                                 id : 'foundEvent'
-                                                            },
-                                                            {
-                                                              id :'tabEvent',
-                                                              width: "100%",
-                                                              height: 300,
-                                                              xtype: 'panel',
-                                                              html: 'Список свойств HTML Event'
-                                                            }
-                                                    ]
-                                                }],
+                                                }]
                                            }
                                          ]
                             },{
@@ -524,19 +529,12 @@
                                                          }
                                                       }
                                                   }
-                                                  // --------------------------------------------------
-                                                  // for(var key in record.data){
-                                                  //    NewObjectElement.setAttribute(key, record.data[key]);
-                                                  // }
-                                                  // --------------------------------------------------
                                                   if (record.data.caption) {
                                                      NewObjectElement.setAttribute("caption",record.data.caption);
                                                   }
                                                   if (record.data.value) {
                                                      NewObjectElement.setAttribute("value",record.data.value);
                                                   }
-
-                                                  console.log("NewObjectElement",NewObjectElement);
                                               }
                                           }
                                       }
@@ -600,88 +598,70 @@
               var clickElement  = null;
               var TmpElementSrc = null;
               var TmpElementSrc = null;
-              ContentEditorDocumeIframe.src = "";
               ContentEditorDocumeIframe.setAttribute("scrolling", "no");
-
        //     selectElement=ContentEditorDocume.document.getElementsByTagName('BODY')[0];
-              ContentEditorDocumeIframe.onload = function () {
-                  ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
-                  ContentEditorDocume.document.designMode = 'off';
-                  // ContentEditorDocume.document.write(   getTextUrl('report.html') +  getTextUrl('contextmenu.html') );
-                  ContentEditorDocume.document.write(   getTextUrl('report.html') );
-                    if (ContentEditorDocume.document.addEventListener) {
-                        ContentEditorDocume.document.addEventListener('contextmenu', function(event) {
-                            // console.log("event",event);
-                            event.preventDefault();
-                        }, false);
-                    } else {
-                        ContentEditorDocume.document.attachEvent('oncontextmenu', function() {
-                            console.log("e", e );
-                            window.event.returnValue = false;
-                        });
-                    }
-                  window.loadScriptIframe("component.js",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
-                  window.loadCSSIFrame("component.css",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
-                  TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
-                  var elementsSrc = TmpElementSrc.querySelectorAll('*');
-                  body = elementsSrc;
-                  for (var i = 0; i < body.length; i++) {
-                      if ( !body[i].getAttribute("DeletTag")){
-                         InitAttributesObject(body[i]);
+              var loadEmploePage = function(pathPage) {
+                  ContentEditorDocumeIframe.src = "";
+                  ContentEditorDocumeIframe.onload = function () {
+                      ContentEditorDocume = (ContentEditorDocumeIframe.contentWindow) ? ContentEditorDocumeIframe.contentWindow : (ContentEditorDocumeIframe.contentDocument.document) ? ContentEditorDocumeIframe.contentDocument.document : ContentEditorDocumeIframe.contentDocument;
+                      ContentEditorDocume.document.designMode = 'off';
+                      // ContentEditorDocume.document.write(   getTextUrl('report.html') +  getTextUrl('contextmenu.html') );
+
+                      if ( pathPage.length >0 ) {
+                         ContentEditorDocume.document.write(   getTextUrl(pathPage) );
+                      } else {
+                         ContentEditorDocume.document.write(`<html>
+ <head></head>
+ <body></body>
+</html>
+                         `);
                       }
+                      if (ContentEditorDocume.document.addEventListener) {
+                          ContentEditorDocume.document.addEventListener('contextmenu', function(event) {
+                              event.preventDefault();
+                          }, false);
+                      } else {
+                          ContentEditorDocume.document.attachEvent('oncontextmenu', function() {
+                              console.log("e", e );
+                              window.event.returnValue = false;
+                          });
+                      }
+                      window.loadScriptIframe("component.js",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
+                      window.loadCSSIFrame("component.css",3000,ContentEditorDocume).then(function(){ },function(error){ console.log(error); });
+                      TmpElementSrc=ContentEditorDocume.document.getElementsByTagName('html')[0];
+                      var elementsSrc = TmpElementSrc.querySelectorAll('*');
+                      body = elementsSrc;
+                      for (var i = 0; i < body.length; i++) {
+                          if ( !body[i].getAttribute("DeletTag")){
+                             InitAttributesObject(body[i]);
+                          }
+                      }
+                      domHTMLTreeStory.getRootNode().removeAll();
+                      domHTMLTreeStory.setRootNode(getDOMtree());
                   }
-                  domHTMLTreeStory.getRootNode().removeAll();
-                  domHTMLTreeStory.setRootNode(getDOMtree());
               }
+
+              loadEmploePage('report.html');
+
               var LoadWebForm = function() {
                        newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=800,height=600,left=320,top=240');
                        newWin.onload = function() {
                           var textEdit =  newWin.document.getElementById("contentText");
                           newWin.document.getElementById("btnSave").onclick = function(){
                               var bodyText = newWin.document.getElementById("contentText").value;
-                                  bodyText = bodyText.replaceAll('cmpActionVar', toWorldsCase("cmpActionVar") );
-                                  bodyText = bodyText.replaceAll('cmpAction', toWorldsCase('cmpAction'));
-                                  bodyText = bodyText.replaceAll('cmpDataSetVar',toWorldsCase('cmpDataSetVar'));
-                                  bodyText = bodyText.replaceAll('cmpDataSet',toWorldsCase('cmpDataSet'));
-                                  bodyText = bodyText.replaceAll('cmpButton',toWorldsCase('cmpButton'));
-                                  bodyText = bodyText.replaceAll('cmpLabel', toWorldsCase('cmpLabel'));
-                                  bodyText = bodyText.replaceAll('cmpScript', toWorldsCase('cmpScript'));
-                                  bodyText = bodyText.replaceAll('cmpEdit', toWorldsCase('cmpEdit'));
-                                  bodyText = bodyText.replaceAll('cmpUnitEdit', toWorldsCase('cmpUnitEdit'));
-                                  bodyText = bodyText.replaceAll('cmpDateEdit', toWorldsCase('cmpDateEdit'));
-                                  bodyText = bodyText.replaceAll('cmpTextArea', toWorldsCase('cmpTextArea'));
-                                  bodyText = bodyText.replaceAll('cmpScript', toWorldsCase('cmpScript'));
-                                  bodyText = bodyText.replaceAll('cmpComboBox', toWorldsCase('cmpComboBox'));
-                                  bodyText = bodyText.replaceAll('cmpComboItem', toWorldsCase('cmpComboItem'));
-                                  bodyText = bodyText.replaceAll('cmpDependences', toWorldsCase('cmpDependences'));
-                                  console.log(bodyText);
+                              bodyText = bodyText.replaceAll('cmpActionVar','cmp-action-var');
+                              bodyText = bodyText.replaceAll('cmpDataSetVar','cmp-data-set-var' );
+                              for (var ind in arrTagDst) {
+                                  bodyText.replaceAll(arrTagDst[ind],arrTagStr[ind]);
+                              }
+                              console.log(bodyText);
                               var parser = new DOMParser();
                               var xmlDoc = parser.parseFromString(bodyText, "text/xml");
                               // var xmlDoc = parser.parseFromString(bodyText,  "text/html");
                               x = xmlDoc.documentElement;
                               domList = xmlDoc.querySelectorAll('*')
-                              /*
-                              for(var ind in domList){
-                                 if ( (domList[ind].getAttribute)&&(domList[ind].getAttribute("caption") != null) ) {
-                                     if (domList[ind].tagName == 'DIV') continue;
-                                     domList[ind].textContent = domList[ind].getAttribute("caption");
-                                     domList[ind].removeAttribute("caption");
-                                 }
-                                 if ((domList[ind].tagName!=='indefined') && (tagInfoList[domList[ind].tagName])){
-                                        if (tagInfoList[domList[ind].tagName].class){
-                                           for (var subind in  tagInfoList[domList[ind].tagName].class){
-                                              var className = tagInfoList[domList[ind].tagName].class[subind];
-                                              domList[ind].classList.add(className);
-                                           }
-                                        }
-                                         console.log("domList[ind].tagName",domList[ind].tagName);
-                                         console.log(tagInfoList[domList[ind].tagName]);
-                                 }
-                              }
-                              */
                               selectElement=ContentEditorDocume.document.getElementsByTagName('BODY')[0];
                               selectElement.outerHTML = new XMLSerializer().serializeToString(xmlDoc.documentElement);
-
                               // перестроить дом дерево
                               domHTMLTreeStory.getRootNode().removeAll();
                               domHTMLTreeStory.setRootNode(getDOMtree());
@@ -695,7 +675,6 @@
                                     domTreeView.expandPath(path);
                                  }
                               }, this); // 1
-
                               newWin.close();
                           };
                           newWin.document.onkeydown = function( event ) {
@@ -707,7 +686,6 @@
               }
               var saveWebForm = function() {
                   TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
-                  clearSystemTagFromEditContent(TmpElement,"innrToCaption");
                   var bodyText= TmpElement.outerHTML;
                   bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
                   bodyText = bodyText.replaceAll('class="selectElement"', '');
@@ -720,32 +698,18 @@
                   bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                   bodyText = bodyText.replaceAll('      </body>', '</body>');
                   // --------------------------------------------------
-                  bodyText = bodyText.replaceAll('cmp-action-var', toCamelCase('cmp-action-var') );
-                  bodyText = bodyText.replaceAll('cmp-action', toCamelCase('cmp-action'));
-                  bodyText = bodyText.replaceAll('cmp-data-set-var',toCamelCase('cmp-data-set-var'));
-                  bodyText = bodyText.replaceAll('cmp-data-set',toCamelCase('cmp-data-set'));
-                  bodyText = bodyText.replaceAll('cmp-button',toCamelCase('cmp-button'));
-                  bodyText = bodyText.replaceAll('cmp-label', toCamelCase('cmp-label'));
-                  bodyText = bodyText.replaceAll('cmp-script', toCamelCase('cmp-script'));
-                  bodyText = bodyText.replaceAll('cmp-edit', toCamelCase('cmp-edit'));
-                  bodyText = bodyText.replaceAll('cmp-unit-edit', toCamelCase('cmp-unit-edit'));
-                  bodyText = bodyText.replaceAll('cmp-date-edit', toCamelCase('cmp-date-edit'));
-                  bodyText = bodyText.replaceAll('cmp-text-area', toCamelCase('cmp-text-area'));
-                  bodyText = bodyText.replaceAll('cmp-dependences', toCamelCase('cmp-dependences'));
-                  bodyText = bodyText.replaceAll('cmp-combo-box', toCamelCase('cmp-combo-box'));
-                  bodyText = bodyText.replaceAll('cmp-combo-item', toCamelCase('cmp-combo-item'));
-
-                  // --------------------------------------------------
-                  bodyText = bodyText.replaceAll('></cmpDataSetVar>', '/>');
-                  bodyText = bodyText.replaceAll('></cmpActionVar>', '/>');
-                  bodyText = bodyText.replaceAll('></cmpLabel>', '/>');
-                  bodyText = bodyText.replaceAll('></cmpButton>', '/>');
+                  bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
+                  bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
+                  for (var ind in arrTagStr) {
+                      bodyText = bodyText.replaceAll(arrTagStr[ind]+"",arrTagDst[ind]+"");
+                      bodyText = bodyText.replaceAll('></'+arrTagDst[ind]+'>', '/>');
+                      console.log(arrTagStr[ind]+"",arrTagDst[ind]+"");
+                  }
                   // --------------------------------------------------
                   bodyText = bodyText.replaceAll('<br>', '<br/>');
                   // TmpElement.outerHTML = bodyText;
                   // TmpElement.innerHTML = bodyText;
                   // var bodyText = TmpElement.innerHTML
-                  console.log(bodyText);
                   copyToClipboard(bodyText);
               }
 
@@ -913,23 +877,22 @@
               var newWin = null;
               var dblClickElement = function(event) {
                     if (selectElement!=null) {
-                              newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
-                              newWin.onload = function() {
-                                  var textEdit =  newWin.document.getElementById("contentText");
-                                  var TmpSelectElement = selectElement.cloneNode(true);
-                                  // clearSystemTagFromEditContent(TmpSelectElement);
-                                  textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
-                                  newWin.document.getElementById("btnSave").onclick = function(){
-                                       // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
-                                       selectElement.outerHTML = newWin.document.getElementById("contentText").value;
-                                       newWin.close();
-                                  };
-                                 newWin.document.onkeydown = function( event ) {
-                                      if ( event.keyCode == 27 ) {
-                                          newWin.close();
-                                      }
-                                  };
-                              }
+                        newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
+                        newWin.onload = function() {
+                            var textEdit =  newWin.document.getElementById("contentText");
+                            var TmpSelectElement = selectElement.cloneNode(true);
+                            textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
+                            newWin.document.getElementById("btnSave").onclick = function(){
+                                 // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
+                                 selectElement.outerHTML = newWin.document.getElementById("contentText").value;
+                                 newWin.close();
+                            };
+                           newWin.document.onkeydown = function( event ) {
+                                if ( event.keyCode == 27 ) {
+                                    newWin.close();
+                                }
+                            };
+                        }
                     }
               }
               var clearSystemTextFromEditContent = function(bodyText){
@@ -945,83 +908,6 @@
                   bodyText = bodyText.replaceAll('      </body>', '</body>');
                   return bodyText
               }
-              var clearSystemTagFromEditContent = function(TmpSelectElement,innrToCaption){
-                  var elements = TmpSelectElement.querySelectorAll('*');
-                  for (var i = 0; i < elements.length; i++) {
-                     for(var ind in elements[i].classList) {
-                      //  if (typeof elements[i].classList[ind] === 'function') continue;
-                        var txt = ""+elements[i].classList[ind];
-                        if ((txt.indexOf('M2_WebBuilder_') !== -1)
-                         || (txt.indexOf('D3_WebBuilder_') !== -1)
-                         || (txt.indexOf('selectElement') !== -1)
-                         ) {
-                           elements[i].classList.remove(elements[i].classList[ind]);
-                        }
-                     }
-                     // информация о компоненте
-                     var keyTag =  elements[i].tagName.toLowerCase();
-                     if ( elements[i].getAttribute("cmptype")){
-                        keyTag+="-"+ elements[i].getAttribute("cmptype");
-                     }
-                     if (tagInfoList[keyTag]){
-                        if ((tagInfoList[keyTag].innerHtmlToCaption) && (tagInfoList[keyTag].innerHtmlToCaption == true)) {
-                            elements[i].setAttribute("caption", elements[i].innerHTML);
-                            elements[i].innerHTML = "";
-                        }
-                     }
-                     if (elements[i].getAttribute){
-                        if (elements[i].getAttribute("delettag")) elements[i].remove();
-                        if (elements[i].getAttribute("delettag_build_element_tree_id"))elements[i].removeAttribute("delettag_build_element_tree_id");
-                     }
-                     /*
-                     for(var key in elements[i]) {
-                        if (typeof elements[i][key] === 'function') continue;
-                        // if (typeof elements[i][key] === 'null') continue;
-                        // if (elements[i][key] == 'null') continue;
-                        console.log(typeof elements[i][key], ind,elements[i][key])
-                        if ( key === 'children') continue;
-                        if ( key === 'childNodes') continue;
-                        if ( key === 'lastChild') continue;
-                        if ( key === 'firstChild ') continue;
-                        if ( key === 'parentNode') continue;
-                        if ( key === 'parentElement') continue;
-                        if ( key === 'ownerDocument') continue;
-                        if ( key === 'attributeStyleMap') continue;
-                        if ( key === 'outerHTML') continue;
-                        if ( key === 'innerHTML') continue;
-                        if ( key === 'part') continue;
-                        //if ( key === 'toString') continue;
-                        //if ( key === 'classList') continue;
-                        if ( key === 'attributes') continue; // список добавленых пользовательских атребут
-                        // console.log("elements[i][key]",""+ind,elements[i][key])
-                        // if ((txt.indexOf('M2_WebBuilder_') !== -1) || (txt.indexOf('D3_WebBuilder_') !== -1)) {
-                        //   elements[i].removeAttribute(key);
-                        // }
-                     }
-                     */
-                  }
-                  var bodyText= TmpSelectElement.outerHTML;
-                  //console.log(TmpSelectElement.outerHTML);
-                  bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
-                  bodyText = bodyText.replaceAll('class="selectElement"', '');
-                  bodyText = bodyText.replaceAll('.selectElement{', '.select-lement{');
-                  bodyText = bodyText.replaceAll('selectElement', '');
-                  bodyText = bodyText.replaceAll('.select-lement{', '.selectElement{');
-                  bodyText = bodyText.replaceAll('class=""', '');
-                  bodyText = bodyText.replaceAll('style=""', '');
-                  bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
-                  bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
-                  bodyText = bodyText.replaceAll('      </body>', '</body>');
-                  if (innrToCaption) {
-                     bodyText = bodyText.replaceAll('cmp-action-var', 'cmpActionVar');
-                     bodyText = bodyText.replaceAll('cmp-action', 'cmpAction');
-                     bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
-                     bodyText = bodyText.replaceAll('cmp-data-set', 'cmpDataSet');
-                     bodyText = bodyText.replaceAll('cmp-label', 'cmpLabel');
-                  }
-                  elements.outerHTML = bodyText;
-                  return elements;
-              }
 
               window.contextMenuExec=function(btn) {
                   console.log("contextMenuExec",btn);
@@ -1029,16 +915,16 @@
 
              window.iframe_Designer_On_Off = function() {
                  if (ContentEditorDocume.document.designMode == 'on' ){
-                       ContentEditorDocume.document.designMode = 'off'
+                    ContentEditorDocume.document.designMode = 'off'
                  } else {
-                       ContentEditorDocume.document.designMode = 'on'
+                    ContentEditorDocume.document.designMode = 'on'
                  }
              }
              window.iframe_Scroll_On_Off = function() {
                  if ( ContentEditorDocumeIframe.getAttribute("scrolling")){
-                     ContentEditorDocumeIframe.removeAttribute("scrolling");
+                    ContentEditorDocumeIframe.removeAttribute("scrolling");
                  } else {
-                     ContentEditorDocumeIframe.setAttribute("scrolling", "no");
+                    ContentEditorDocumeIframe.setAttribute("scrolling", "no");
                  }
              }
              window.contextMenuSetFontSize=function(btn) {
@@ -1053,7 +939,6 @@
                   // информация о компоненте
                   var keyTag =  NewObjectElement.tagName.toLowerCase();
                   var parentTag =  selectElement.tagName.toLowerCase();
-
                   if (( NewObjectElement.getAttribute("cmptype"))&&(NewObjectElement.getAttribute("cmptype")!=='tmp')){
                       keyTag+="-"+ NewObjectElement.getAttribute("cmptype");
                   }
@@ -1075,13 +960,21 @@
                  var nam = el.getAttribute("propname");
                  if (el.value === 'null'){
                     selectElement.removeAttribute(nam);
+                 }else if (nam == 'innerHTML'){
+                   selectElement.innerHTML = el.value;
+                 }else if (nam == 'innerTEXT'){
+                   selectElement.innerTEXT = el.value;
                  }else{
                     selectElement.setAttribute(nam,el.value);
-                    // try {
-                    //    selectElement[nam] = el.value;
-                    // } catch {
-                    //    selectElement.setAttribute(nam,el.value);
-                    // }
+                 }
+              }
+              changeElementStyleVal = function( el ){  // функция изменения  свойства элемента
+                 if ((selectElement == undefined)||(selectElement == null)) return;
+                 var nam = el.getAttribute("propname");
+                 if (el.value === 'null'){
+                    selectElement.style[nam]=null;
+                 }else{
+                    selectElement.style[nam]=el.value;
                  }
               }
 
@@ -1091,12 +984,38 @@
                  if (( selectElement.getAttribute("cmptype")) && (selectElement.getAttribute("cmptype")!=='tmp')){
                       keyTag+="-"+ selectElement.getAttribute("cmptype");
                  }
+
+               // поиск стилей
+                var foundTagProperty = Ext.getCmp('foundTagProperty');
+                srctxt = foundTagProperty.value.toLowerCase();
+
+                var foundTagStyle = Ext.getCmp('foundStyle');
+                srctxtStyle = foundTagStyle.value.toLowerCase();
+                var optst = [];
+                optst.push("<table border='1'>");
+                for( var key in selectElement.style ){
+                   if (typeof selectElement.style[key] ==='function') continue;
+                   if (srctxtStyle.length > 0 ) {
+                      if (key.toLowerCase().indexOf(srctxtStyle) == -1) continue;
+                   }
+                   var val = selectElement.style[key];
+                   optst.push("<tr><td>");
+                   optst.push(key);
+                   optst.push("</td><td>");
+                    if (typeof selectElement.style[key] == "string") {
+                      optst.push(`  <input propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text" />`);
+                   }
+                   optst.push("</td></tr>");
+                 }
+                optst.push("</table>");
+                Ext.getCmp('tabStyle').update(optst.join(""));
+
+
+                 var foundTagProperty = Ext.getCmp('foundTagProperty');
+                 var srctxt = foundTagProperty.value.toLowerCase();
+                 var opt = [];
                  if ((tagInfoList[keyTag]) && (tagInfoList[keyTag].propertyVariant)) {
-                     var foundTagProperty = Ext.getCmp('foundTagProperty');
-                     var srctxt = foundTagProperty.value.toLowerCase();
-                     var tabTagProperty = Ext.getCmp('tabTagProperty');
-                     var opt = [];
-                     opt.push("<table>");
+                     opt.push("<table border='1'>");
                      for( var ind in tagInfoList[keyTag].propertyVariant){
                         if (srctxt.length > 0 ) {
                            if (ind.toLowerCase().indexOf(srctxt) == -1) continue;
@@ -1123,8 +1042,70 @@
                         opt.push("</tr>");
                      }
                      opt.push("</table>");
-                     tabTagProperty.ariaEl.dom.innerHTML = opt.join("");
                 }
+                opt.push("<table border='1'>");
+                for( var ind in selectElement){
+                   if (srctxt.length > 0 ) {
+                      if (ind.toLowerCase().indexOf(srctxt) == -1) continue;
+                   }
+                   if (ind.indexOf("DOCUMENT_") != -1) continue;
+                   if (ind.indexOf("PROCESSING_") != -1) continue;
+                   if (ind.indexOf("CDATA_SECTION_") != -1) continue;
+                   if (ind.indexOf("ENTITY_") != -1) continue;
+                   if (ind.indexOf("ENTITY_") != -1) continue;
+                   if (ind == 'innerText') continue;
+                   if (ind == 'previousSibling') continue;
+                   if (ind == 'lastChild') continue;
+                   if (ind == 'firstChild') continue;
+                   if (ind == 'childNodes') continue;
+                   if (ind == 'parentNode') continue;
+                   if (ind == 'ownerDocument') continue;
+                   if (ind == 'parentElement') continue;
+                   if (ind == 'innerHTML') continue;
+                   if (ind == 'nextSibling') continue;
+                   if (ind == 'replaceChild') continue;
+                   if (ind == 'removeChild') continue;
+                   if (ind == 'appendChild') continue;
+                   if (ind == 'addEventListener') continue;
+                   if (ind == 'replaceChildren') continue;
+                   if (ind == 'replaceWith') continue;
+                   if (ind == 'removeAttributeNode') continue;
+                   if (ind == 'removeAttributeNS') continue;
+                   if (ind == 'removeAttribute') continue;
+                   if (ind == 'remove') continue;
+                   if (ind == 'insertAdjacentElement') continue;
+                   if (ind == 'insertAdjacentHTML') continue;
+                   if (ind == 'insertAdjacentText') continue;
+                   if (ind == 'nextElementSibling') continue;
+                   if (ind == 'previousElementSibling') continue;
+                   if (ind == 'childElementCount') continue;
+                   if (ind == 'lastElementChild') continue;
+                   if (ind == 'firstElementChild') continue;
+                   if (ind == 'shadowRoot') continue;
+                   if (ind == 'children') continue;
+                   if (ind.substr(0,3) == 'get') continue;
+                   if (ind.substr(0,3) == 'set') continue;
+                   if (ind.substr(0,3) == 'add') continue;
+                   var typ = typeof selectElement[ind];
+                   if (ind.substr(0,2) == 'on') typ = 'event';
+                   var val = selectElement.getAttribute(ind)
+                   console.log(ind,typ,val)
+                   opt.push("<tr><td>");
+                   opt.push(ind);
+                   opt.push('  ');
+                   opt.push("</td>");
+                   opt.push("<td>");
+                   if (typ == "string") {
+                      opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                   }
+                   if (typ == "event") {
+                      opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                   }
+                   opt.push("</td>");
+                   opt.push("</tr>");
+                }
+                opt.push("</table>");
+                Ext.getCmp('tabTagProperty').update(opt.join(""));
              }
           });
     </script>
