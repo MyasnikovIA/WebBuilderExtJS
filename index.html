@@ -960,6 +960,10 @@
                  var nam = el.getAttribute("propname");
                  if (el.value === 'null'){
                     selectElement.removeAttribute(nam);
+                 }else if (el.value == 'true'){
+                   selectElement.setAttribute(nam,true);
+                 }else if (el.value == 'false'){
+                   selectElement.setAttribute(nam,false);
                  }else if (nam == 'innerHTML'){
                    selectElement.innerHTML = el.value;
                  }else if (nam == 'innerTEXT'){
@@ -1097,6 +1101,14 @@
                    opt.push("<td>");
                    if (typ == "string") {
                       opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                   }
+                   if (typ == "boolean") {
+                       opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
+                       opt.push(`<option value="null" />`);
+                       opt.push(`<option value="true" />`);
+                       opt.push(`<option value="false" />`);
+                       opt.push(`</datalist>`);
+                       opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
                    }
                    if (typ == "event") {
                       opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
