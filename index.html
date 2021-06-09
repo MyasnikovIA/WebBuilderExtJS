@@ -625,13 +625,13 @@
                                         if (record.data.staticID) {
                                             NewObjectElement.id = record.data.staticID;
                                         }
-                                        if (record.data.propertyVariant) {
-                                            for (var key in record.data.propertyVariant) {
-                                                if (key == "name") {
-                                                    NewObjectElement.setAttribute("name", record.data.text + getRandomInt(999999));
-                                                }
-                                            }
-                                        }
+                                        //if (record.data.propertyVariant) {
+                                        //    for (var key in record.data.propertyVariant) {
+                                        //        if (key == "name") {
+                                        //            NewObjectElement.setAttribute("name", record.data.text + getRandomInt(999999)+(new Date().getMilliseconds()));
+                                        //        }
+                                        //    }
+                                        //}
                                         if (record.data.caption) {
                                             NewObjectElement.setAttribute("caption", record.data.caption);
                                         }

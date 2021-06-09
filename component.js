@@ -1,4 +1,6 @@
-
+        function getRandomInt(max) {
+          return Math.floor(Math.random() * max);
+        }
        // https://github.com/mdn/web-components-examples/blob/master/life-cycle-callbacks/main.js
 
         customElements.define('cmp-edit', class extends HTMLElement {
@@ -162,6 +164,69 @@
              }
              attributeChangedCallback(name, oldValue, newValue) {
                 this.render();
+             }
+        });
+
+
+        customElements.define('cmp-data-set-var', class extends HTMLElement {
+            shadow = null;
+            render() {
+                if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
+                        if (!this.getAttribute('name')) {this.setAttribute('name', "DS_VAR_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                        if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
+                }
+                var tmpdataSetVar = document.createElement('template');
+                tmpdataSetVar.innerHTML = ` <div  style="display:none;" ></div> `;
+                this.shadow.appendChild(tmpdataSetVar.content.cloneNode(true));
+            }
+            constructor() {
+                super(); // always call super() first in the constructor.
+                this.render();
+             }
+             connectedCallback() {
+                this.render();
+             }
+        });
+        customElements.define('cmp-data-set', class extends HTMLElement {
+             constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('name')) {this.setAttribute('name', "DS_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                var tmpdataSet = document.createElement('template');
+                tmpdataSet.innerHTML = `
+                  <div  style="display:none;" >
+                     <slot></slot>
+                  </div>
+                `;
+                var shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(tmpdataSet.content.cloneNode(true));
+             }
+        });
+        customElements.define('cmp-action-var', class extends HTMLElement {
+            constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
+                if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_VAR_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
+                var tmpActionVar = document.createElement('template');
+                tmpl.innerHTML = ` <div  style="display:none;" ></div> `;
+                var shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(tmpActionVar.content.cloneNode(true));
+             }
+        });
+        customElements.define('cmp-action', class extends HTMLElement {
+             constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                var tmpAction = document.createElement('template');
+                tmpl.innerHTML = `
+                  <div  style="display:none;" >
+                     <slot></slot>
+                  </div>
+                `;
+                var shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(tmpAction.content.cloneNode(true));
              }
         });
 // ------------------------------------------------------------------------------------------------

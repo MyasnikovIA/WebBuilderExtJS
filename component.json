@@ -211,9 +211,8 @@
               "leaf": true,
               "text": "cmpDataSet",
               "tagName": "cmp-data-set",
-              "innerHTML": "cmpDataSet",
               "propertyVariant": {"name":"string","activateoncreate": [null,"false","true"],"compile": [null,"false","true"] },
-              "class": ["D3_WebBuilder_NotVisibleElement"],
+              "class": [],
                "innerHTML": "\r<![CDATA[\r -- SQL query \r      ]]>\r"
             },
             {
@@ -224,7 +223,7 @@
               "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":[null,"g{name}"]},
               "propertyMandatory": {"name":"string"} ,
               "parentTag": ["cmp-data-set"],
-              "class": ["D3_WebBuilder_NotVisibleElement"],
+              "class": [],
               "notContentInnerHTML": true
             },
             {
@@ -238,8 +237,7 @@
                                 "max_exec_time":"number"
               },
               "propertyMandatory": {"name":"string"} ,
-              "parentTag": [""],
-              "class": ["D3_WebBuilder_NotVisibleElement"]
+              "class": []
             },
             {
               "leaf": true,
@@ -250,7 +248,7 @@
                                   "property": "string","put":[null,"p{name}"],"get":[null,"g{name}"] ,"len":"number" },
               "propertyMandatory": {"name":"string"},
               "parentTag": ["cmp-action"],
-              "class": ["D3_WebBuilder_NotVisibleElement"],
+              "class": [],
               "notContentInnerHTML": true
             }
         ]
