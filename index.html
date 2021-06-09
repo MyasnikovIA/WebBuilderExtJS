@@ -317,7 +317,10 @@
                                                     (selectElement.tagName != "HTML") &&
                                                     (selectElement.tagName != "HEAD")
                                                 ) {
-                                                    var parentEl = selectElement.parentElement;
+                                                    var parentEl = selectElement.previousElementSibling;
+                                                    if (parentEl == null){
+                                                        parentEl = selectElement.parentElement;
+                                                    }
                                                     selectElement.remove();
                                                     selectElement = parentEl;
                                                     viewPropertyInfo(selectElement); // показать свойства выбранного элемента
@@ -595,7 +598,7 @@
                                     itemclick: function(tree, record, item, index, e, options) {
                                         // var cloneItem = record.data.slice()
                                         var tagName = record.data.tagName;
-                                        console.log(record.data);
+                                        //console.log(record.data);
                                         // ElementID
                                         if (!tagName) {
                                             return;
@@ -727,7 +730,7 @@
                         }, false);
                     } else {
                         ContentEditorDocume.document.attachEvent('oncontextmenu', function() {
-                            console.log("e", e);
+                            //console.log("e", e);
                             window.event.returnValue = false;
                         });
                     }
@@ -762,7 +765,7 @@
                             bodyText.replaceAll(arrTagDst[ind], arrTagStr[ind]);
                         }
                         bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                        bodyText = bodyText.replaceAll(']]-->', ']]>');
+                        bodyText = bodyText.replaceAll(']]-->', ' ]]>');
                         console.log(bodyText);
                         var parser = new DOMParser();
                         var xmlDoc = parser.parseFromString(bodyText, "text/xml");
@@ -812,12 +815,12 @@
                 for (var ind in arrTagStr) {
                     bodyText = bodyText.replaceAll(arrTagStr[ind] + "", arrTagDst[ind] + "");
                     bodyText = bodyText.replaceAll('></' + arrTagDst[ind] + '>', '/>');
-                    console.log(arrTagStr[ind] + "", arrTagDst[ind] + "");
+                    //console.log(arrTagStr[ind] + "", arrTagDst[ind] + "");
                 }
                 // --------------------------------------------------
                 bodyText = bodyText.replaceAll('<br>', '<br/>');
                 bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                bodyText = bodyText.replaceAll(']]-->', ']]>');
+                bodyText = bodyText.replaceAll(']]-->', ' ]]>');
                 // TmpElement.outerHTML = bodyText;
                 // TmpElement.innerHTML = bodyText;
                 // var bodyText = TmpElement.innerHTML
@@ -895,11 +898,25 @@
                         (selectElement != null) &&
                         (selectElement.tagName != "BODY")
                     ) {
-                        var parentEl = selectElement.parentElement;
+                        var parentEl = selectElement.previousElementSibling;
+                        if (parentEl == null){
+                            parentEl = selectElement.parentElement;
+                        }
+                        console.log( parentEl )
                         selectElement.remove();
                         selectElement = parentEl;
                         domHTMLTreeStory.getRootNode().removeAll();
                         domHTMLTreeStory.setRootNode(getDOMtree());
+                        var domTreeView = Ext.getCmp('domTreeView');
+                        var startNode = domTreeView.getRootNode();
+                        startNode.cascadeBy(function(childNode) {
+                            if (childNode.get('ObjectElement') == selectElement) {
+                                var record = domHTMLTreeStory.getNodeById(childNode.id);
+                                domTreeView.getSelectionModel().select(record);
+                                var path = record.getPath();
+                                domTreeView.expandPath(path);
+                            }
+                        }, this);
                     }
                 }
                 //-------------------------------------------
@@ -1057,7 +1074,7 @@
                 bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                 bodyText = bodyText.replaceAll('      </body>', '</body>');
                 bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                bodyText = bodyText.replaceAll(']]-->', ']]>');
+                bodyText = bodyText.replaceAll(']]-->', ' ]]>');
                 return bodyText
             }
 
@@ -1274,7 +1291,7 @@
                     if (ind.substr(0, 2) == 'on') typ = 'event';
                     if (typ == 'function') continue;
                     var val = selectElement.getAttribute(ind)
-                    console.log(ind, typ, val)
+                    // console.log(ind, typ, val)
                     if (ind == "style") {
                         opt.push("<tr><td>");
                         opt.push(ind);
