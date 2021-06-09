@@ -4,10 +4,16 @@
 <head>
     <link href="lib/ExtJS_6.0.0/theme-classic-all.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-classic/resources/theme-classic-all.css" rel="stylesheet" />
+
+    <script src="lib/beautify/beautify.js"></script>
+    <script src="lib/beautify/beautify-css.js"></script>
+    <script src="lib/beautify/beautify-html.js"></script>
+
     <link href="builder.css" rel="stylesheet" />
     <script type="text/javascript" src="lib/ExtJS_6.0.0/ext-all.js"></script>
     <script type="text/javascript" src="lib/system.js"></script>
     <script type="text/javascript">
+
         // --------------- Вдохновение получил из источников -----------
         //  https://metanit.com/web/extjs/
         //  https://metanit.com/web/extjs/6.7.php
@@ -43,7 +49,6 @@
             }
         }
         structToArr(componentListJson, tagInfoList);
-
         var arrTagDst = [];
         var arrTagStr = [];
         for (var key in tagInfoList) {
@@ -812,7 +817,7 @@
                 // TmpElement.outerHTML = bodyText;
                 // TmpElement.innerHTML = bodyText;
                 // var bodyText = TmpElement.innerHTML
-                copyToClipboard(bodyText);
+                copyToClipboard( html_beautify( bodyText ) );
             }
 
             var insertElement = function(event) {
@@ -1019,13 +1024,12 @@
                         win.show();
                       return;
                       */
-                    newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
+                    newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=1200,height=600,left=320,top=240');
                     newWin.onload = function() {
                         var textEdit = newWin.document.getElementById("contentText");
                         var TmpSelectElement = selectElement.cloneNode(true);
-                        textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
+                        textEdit.innerHTML = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) );
                         newWin.document.getElementById("btnSave").onclick = function() {
-                            // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
                             selectElement.outerHTML = newWin.document.getElementById("contentText").value;
                             newWin.close();
                         };
