@@ -172,14 +172,16 @@
                                 height: 28,
                                 renderTo: Ext.getBody(),
                                 dockedItems: [toolbar]
-                            },{
+                            },
+                            /*{
                                 xtype: 'panel',
                                 title: '',
                                 html: 'Нижняя панель',
                                 region: 'south',
                                 height: 80,
                                 split: true
-                            },{
+                            },*/
+                            {
                                 xtype: 'panel',
                                 title: ' ',
                                 region: 'west',
@@ -403,7 +405,7 @@
                                                           id: 'tabTagProperty',
                                                           xtype: 'container',
                                                           width: "100%",
-                                                          height: 248,
+                                                          height: (document.documentElement.clientHeight *0.425),
                                                           overflowY: 'scroll',
                                                           overflowX: 'scroll',
                                                           flex: 1,             // take remaining available vert space
@@ -432,7 +434,7 @@
                                                               id :'tabStyle',
                                                               width: "100%",
                                                               xtype: 'container',
-                                                              height: 248,
+                                                              height: (document.documentElement.clientHeight *0.425),
                                                               overflowY: 'scroll',
                                                               overflowX: 'scroll',
                                                               html: 'Styles'
@@ -640,9 +642,7 @@
                       domHTMLTreeStory.setRootNode(getDOMtree());
                   }
               }
-
-              loadEmploePage('report.html');
-
+              loadEmploePage('');
               var LoadWebForm = function() {
                        newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=800,height=600,left=320,top=240');
                        newWin.onload = function() {
@@ -877,6 +877,46 @@
               var newWin = null;
               var dblClickElement = function(event) {
                     if (selectElement!=null) {
+                       /*
+                       var win = Ext.create('Ext.window.Window', {
+                            title: 'EditElement',
+                            closeAction: 'destroy',
+                            height: 800,
+                            width: 1000,
+                            left:30,
+                            top:30,
+                            layout: 'fit',
+                            modal:true,
+                            html: `
+                                            <div colspan="3">
+                                                <textarea id="contentText" style="width: 100%;" rows="49" ></textarea>
+                                            </div>
+                                            <div style="text-align:right;">
+                                                <button id="btnSave">save</button>
+                                            </div>
+                             `
+                            ,listeners:{
+                                close:function(){
+
+                                },
+                                show:function(){
+                                    var textEdit =  document.getElementById("contentText");
+                                    var TmpSelectElement = selectElement.cloneNode(true);
+                                    textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
+                                    document.getElementById("btnSave").onclick = function(){
+                                         // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
+                                         var textEditSave =  document.getElementById("contentText");
+                                         console.log(textEditSave.value);
+                                         console.log(selectElement);
+                                         selectElement.outerHTML = textEditSave.value;
+                                         win.close();
+                                    };
+                                }
+                            }
+                        });
+                        win.show();
+                      return;
+                      */
                         newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=600,height=400,left=320,top=240');
                         newWin.onload = function() {
                             var textEdit =  newWin.document.getElementById("contentText");
@@ -982,6 +1022,23 @@
                  }
               }
 
+              changeElementСlassList = function( el ){  // функция изменения  свойства элемента
+                 if ((selectElement == undefined)||(selectElement == null)) return;
+                 var nam = el.getAttribute("propname");
+                 if (el.value === 'null'){
+                    selectElement.classList=[];
+                 }else{
+                    selectElement.classList=[];
+                    var arrClass = el.value.split(" ");
+                    for (var ind in arrClass){
+                       if (arrClass[ind].length == 0 ) continue;
+                       selectElement.classList.push( arrClass[ind].replace(/\s+/g, '') );
+                    }
+                    selectElement.style[nam]= el.value;
+                 }
+              }
+
+
              // Прочитать список свойств  выбранного элемента
              viewPropertyInfo = function(selectElement) {
                  var keyTag = selectElement.tagName.toLowerCase();
@@ -996,7 +1053,7 @@
                 var foundTagStyle = Ext.getCmp('foundStyle');
                 srctxtStyle = foundTagStyle.value.toLowerCase();
                 var optst = [];
-                optst.push("<table border='1'>");
+                optst.push("<table >");
                 for( var key in selectElement.style ){
                    if (typeof selectElement.style[key] ==='function') continue;
                    if (srctxtStyle.length > 0 ) {
@@ -1014,12 +1071,11 @@
                 optst.push("</table>");
                 Ext.getCmp('tabStyle').update(optst.join(""));
 
-
                  var foundTagProperty = Ext.getCmp('foundTagProperty');
                  var srctxt = foundTagProperty.value.toLowerCase();
                  var opt = [];
                  if ((tagInfoList[keyTag]) && (tagInfoList[keyTag].propertyVariant)) {
-                     opt.push("<table border='1'>");
+                     opt.push("<table>");
                      for( var ind in tagInfoList[keyTag].propertyVariant){
                         if (srctxt.length > 0 ) {
                            if (ind.toLowerCase().indexOf(srctxt) == -1) continue;
@@ -1047,7 +1103,7 @@
                      }
                      opt.push("</table>");
                 }
-                opt.push("<table border='1'>");
+                opt.push("<table >");
                 for( var ind in selectElement){
                    if (srctxt.length > 0 ) {
                       if (ind.toLowerCase().indexOf(srctxt) == -1) continue;
@@ -1087,13 +1143,41 @@
                    if (ind == 'firstElementChild') continue;
                    if (ind == 'shadowRoot') continue;
                    if (ind == 'children') continue;
+                   if (ind == 'attributes') continue;
+                   if (ind == 'assignedSlot') continue;
+                   if (ind == 'outerHTML') continue;
+                   if (ind == 'ariaAutoComplete') continue;
+                   if (ind == 'nodeValue') continue;
+                   if (ind == 'attributeStyleMap') continue;
+                   if (ind == 'part') continue;
+                   if (ind == 'prefix') continue;
+                   if (ind == 'offsetParent') continue;
+                   if (ind == 'dataset') continue;  // добавить обработку ключ значение
                    if (ind.substr(0,3) == 'get') continue;
                    if (ind.substr(0,3) == 'set') continue;
                    if (ind.substr(0,3) == 'add') continue;
+                   if (ind.substr(0,4) == 'aria') continue;
                    var typ = typeof selectElement[ind];
                    if (ind.substr(0,2) == 'on') typ = 'event';
+                   if (typ == 'function') continue;
                    var val = selectElement.getAttribute(ind)
                    console.log(ind,typ,val)
+                   if (ind == "style") {
+                       opt.push("<tr><td>");
+                       opt.push(ind);
+                       opt.push("</td><td>");
+                       opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                       opt.push("</td></tr>");
+                       continue;
+                   }
+                   if (ind == "classList") {
+                       opt.push("<tr><td>");
+                       opt.push(ind);
+                       opt.push("</td><td>");
+                       opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementСlassList(this)" type="text" />`);
+                       opt.push("</td></tr>");
+                       continue;
+                   }
                    opt.push("<tr><td>");
                    opt.push(ind);
                    opt.push('  ');
@@ -1101,6 +1185,9 @@
                    opt.push("<td>");
                    if (typ == "string") {
                       opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                   }
+                   if (typ == "number") {
+                      opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="number" />`);
                    }
                    if (typ == "boolean") {
                        opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
