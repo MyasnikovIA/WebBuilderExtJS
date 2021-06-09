@@ -761,6 +761,8 @@
                         for (var ind in arrTagDst) {
                             bodyText.replaceAll(arrTagDst[ind], arrTagStr[ind]);
                         }
+                        bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
+                        bodyText = bodyText.replaceAll(']]-->', ']]>');
                         console.log(bodyText);
                         var parser = new DOMParser();
                         var xmlDoc = parser.parseFromString(bodyText, "text/xml");
@@ -814,6 +816,8 @@
                 }
                 // --------------------------------------------------
                 bodyText = bodyText.replaceAll('<br>', '<br/>');
+                bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
+                bodyText = bodyText.replaceAll(']]-->', ']]>');
                 // TmpElement.outerHTML = bodyText;
                 // TmpElement.innerHTML = bodyText;
                 // var bodyText = TmpElement.innerHTML
@@ -1052,6 +1056,8 @@
                 bodyText = bodyText.replaceAll('<body><div', '<body>\r<div');
                 bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                 bodyText = bodyText.replaceAll('      </body>', '</body>');
+                bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
+                bodyText = bodyText.replaceAll(']]-->', ']]>');
                 return bodyText
             }
 
@@ -1147,6 +1153,7 @@
 
             // Прочитать список свойств  выбранного элемента
             viewPropertyInfo = function(selectElement) {
+                if(!selectElement) return;
                 var keyTag = selectElement.tagName.toLowerCase();
                 if ((selectElement.getAttribute("cmptype")) && (selectElement.getAttribute("cmptype") !== 'tmp')) {
                     keyTag += "-" + selectElement.getAttribute("cmptype");

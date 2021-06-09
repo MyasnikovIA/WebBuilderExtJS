@@ -90,7 +90,7 @@
         "leaf": true,
         "text": "cmpScript",
         "tagName": "cmp-script",
-        "innerHTML": "<![CDATA[ \n  \n  \n  ]]>",
+        "innerHTML": "<![CDATA[ \n  \n  \n       ]]>",
         "propertyVariant": {}
       },{
         "leaf": true,
@@ -214,7 +214,7 @@
               "innerHTML": "cmpDataSet",
               "propertyVariant": {"name":"string","activateoncreate": [null,"false","true"],"compile": [null,"false","true"] },
               "class": ["D3_WebBuilder_NotVisibleElement"],
-               "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r"
+               "innerHTML": "\r<![CDATA[\r -- SQL query \r      ]]>\r"
             },
             {
               "leaf": true,
@@ -231,7 +231,7 @@
               "leaf": true,
               "text": "cmpAction",
               "tagName": "cmp-action",
-              "innerHTML": "\r<![CDATA[\r -- SQL query \r ]]>\r",
+              "innerHTML": "\r<![CDATA[\r -- SQL query \r      ]]>\r",
               "propertyVariant": {"name":"string",
                                 "compile":["true","false"],
                                 "mode":["post","get"],
