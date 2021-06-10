@@ -21,6 +21,12 @@
         //  https://metanit.com/web/extjs/7.8.php
         //  https://www.w3cschool.cn/extjs/extjs_localization.html
         // -------------------------------------------------------------
+        // определяем браузер
+        var userAgent = navigator.userAgent.toLowerCase();
+        var Mozila = /firefox/.test(userAgent);
+        var Chrome = /chrome/.test(userAgent);
+        var Safari = /safari/.test(userAgent);
+        var Opera  = /opera/.test(userAgent);
 
         var clientHeight = document.documentElement.clientHeight;
         var clientWidth = document.documentElement.clientWidth;
@@ -759,11 +765,11 @@
                     if (pathPage.length > 0) {
                         ContentEditorDocume.document.write(getTextUrl(pathPage));
                     } else {
-                        ContentEditorDocume.document.write(`<html>
- <head></head>
- <body></body>
-</html>
-                         `);
+                        if (Mozila) {
+                          ContentEditorDocume.document.write(`<html><head></head><body style="height:100%;width:100%;" ></body></html>`);
+                        }else{
+                          ContentEditorDocume.document.write(`<html><head></head><body></body></html>`);
+                        }
                     }
                     if (ContentEditorDocume.document.addEventListener) {
                         ContentEditorDocume.document.addEventListener('contextmenu', function(event) {
@@ -873,10 +879,19 @@
             }
 
             var insertElement = function(event) {
-                clickElement = event.toElement;
-                var keyTag = event.toElement.tagName.toLowerCase();
-                if (event.toElement.getAttribute("cmptype")) {
-                    keyTag += "-" + event.toElement.getAttribute("cmptype");
+                var keyTag ;
+                if (event.toElement){
+                    clickElement = event.toElement;
+                    keyTag = event.toElement.tagName.toLowerCase();
+                    if (event.toElement.getAttribute("cmptype")) {
+                        keyTag += "-" + event.toElement.getAttribute("cmptype");
+                    }
+                }else{
+                    clickElement = event.target;
+                    var keyTag = event.target.tagName.toLowerCase();
+                    if (event.target.getAttribute("cmptype")) {
+                        keyTag += "-" + event.target.getAttribute("cmptype");
+                    }
                 }
                 selectElement = clickElement;
                 if ((event.button == 0) && (NewObjectElement !== null)) {
