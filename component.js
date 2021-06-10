@@ -446,8 +446,16 @@
         });
 
         customElements.define('cmp-popup-menu', class extends HTMLElement {
-             constructor() {
-                super(); // always call super() first in the constructor.
+
+            shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                   }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpAction = document.createElement('template');
                 this.innerHTML = `
@@ -455,36 +463,63 @@
                      <slot></slot>
                   </div>
                 `;
-                var shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(tmpAction.content.cloneNode(true));
+                 this.shadow.appendChild(tmpAction.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
              }
         });
 
         customElements.define('cmp-auto-popup-menu', class extends HTMLElement {
-             constructor() {
-                super(); // always call super() first in the constructor.
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                   }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_AUTO_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
-                var tmpAction = document.createElement('template');
-                tmpAction.innerHTML = `
+                var tmpPopUp = document.createElement('template');
+                tmpPopUp.innerHTML = `
                   <div  style="display:none;" >
                      <slot></slot>
                   </div>
                 `;
-                var shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(tmpAction.content.cloneNode(true));
+                 this.shadow.appendChild(tmpPopUp.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
              }
         });
 
         customElements.define('cmp-popup-item', class extends HTMLElement {
-            constructor() {
-                super(); // always call super() first in the constructor.
-                if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
-                if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_ITEM_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
-                if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
-                var tmpActionVar = document.createElement('template');
-                tmpActionVar.innerHTML = ` <div  style="display:none;" ></div> `;
-                var shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(tmpActionVar.content.cloneNode(true));
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                   }
+                if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_AUTO_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                var tmpPopUpItemVar = document.createElement('template');
+                tmpPopUpItemVar.innerHTML = ` <div  style="display:none;" ></div> `;
+                this.shadow.appendChild(tmpPopUpItemVar.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
              }
         });
 
