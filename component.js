@@ -21,6 +21,60 @@
                 this.render();
              }
         });
+
+        customElements.define('cmp-button-edit', class extends HTMLElement {
+             shadow = null;
+             static get observedAttributes() {
+               return ['width','name', 'caption','data','value',"clearbutton"];
+             }
+             render() {
+                if (!this.shadow) {
+                     this.shadow = this.attachShadow({mode: 'open'});
+                     if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                }
+                var clearbutton="";
+                if ((this.getAttribute('clearbutton'))&&(this.getAttribute("clearbutton") == 'true')) {
+                   clearbutton="<button>X</button>";
+                }
+                var styleTxt = [];
+                if (this.getAttribute('width')) { styleTxt.push('width:'+this.getAttribute('width')); }else{ styleTxt.push('width:100px ') }
+                styleTxt = styleTxt.join(";");
+                this.shadow.innerHTML = `<div><input type="text"  value="${this.getAttribute('value')}"  style='${styleTxt}' /><button>...</button>${clearbutton}</div>`;
+             }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
+
+        customElements.define('cmp-unit-edit', class extends HTMLElement {
+             shadow = null;
+             static get observedAttributes() {
+               return ['width','name', 'caption','data','value',"clearbutton","unit","composition"];
+             }
+             render() {
+                if (!this.shadow) {
+                     this.shadow = this.attachShadow({mode: 'open'});
+                     if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                }
+                var clearbutton="";
+                if ((this.getAttribute('clearbutton'))&&(this.getAttribute("clearbutton") == 'true')) {
+                   clearbutton="<button>X</button>";
+                }
+                var styleTxt = [];
+                if (this.getAttribute('width')) { styleTxt.push('width:'+this.getAttribute('width')); }else{ styleTxt.push('width:100px ') }
+                styleTxt = styleTxt.join(";");
+                this.shadow.innerHTML = `<div><input type="text"  value="${this.getAttribute('value')}"  style='${styleTxt}' /><button>...</button>${clearbutton}</div>`;
+             }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
         customElements.define('cmp-label', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
@@ -40,6 +94,127 @@
              }
         });
 
+        customElements.define('cmp-hyper-link', class extends HTMLElement {
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'caption','data'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('name')) {this.setAttribute('name', "HYPER_LINK_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                   }
+                   this.shadow.innerHTML = `<a name="${this.getAttribute('name')}" cmptype="" title="" class="label" >${this.getAttribute('caption')}</a>`;
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
+
+        customElements.define('cmp-radio-group', class extends HTMLElement {
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'caption','value','title'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('title')) {this.setAttribute('title',""); }
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                        if (!this.getAttribute('name')) {this.setAttribute('name', "radioGroup_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                   }
+                   //${this.getAttribute('caption')}
+                    this.shadow.innerHTML = "";
+                    var tmpdataSet = document.createElement('template');
+                    tmpdataSet.innerHTML = `
+                      <span   name="${this.getAttribute('name')}"  cmptype="Radio" title="${this.getAttribute('title')}" value="${this.getAttribute('value')}" >
+                         <slot></slot>
+                      </span>
+                    `;
+                    this.shadow.appendChild(tmpdataSet.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
+
+        customElements.define('cmp-radio-item', class extends HTMLElement {
+              shadow = null;
+              static get observedAttributes() {
+                return ['width', 'caption','value'];
+              }
+              render() {
+                    if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                    }
+
+                    this.shadow.innerHTML = "";
+                    var tmpdataSet = document.createElement('template');
+                    var captionTxt="";
+                    if (this.getAttribute('caption')) {
+                        captionTxt="<label>"+this.getAttribute('caption')+"</label>"
+                    }
+                    tmpdataSet.innerHTML = `
+                         <input type="radio"  name="${this.parentElement.getAttribute('name')}" value="${this.getAttribute('value')}">
+                         ${captionTxt}
+                    `;
+                    this.shadow.appendChild(tmpdataSet.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
+
+
+
+        customElements.define('cmp-data-edit', class extends HTMLElement {
+              shadow = null;
+              static get observedAttributes() {
+                 return ['width','name', 'caption', 'min','max','data','value','step' , "required", "mask_type"];
+              }
+              render() {
+                 if (!this.shadow) {
+                      this.shadow = this.attachShadow({mode: 'open'});
+                 }
+                 var atr = [];
+                 if (this.getAttribute('required')) { atr.push(" required ") ; }
+                 if (this.getAttribute('pattern')) { atr.push( ' pattern="'+this.getAttribute("pattern")+'" '); }
+                 if (!this.getAttribute('mask_type')) {
+                   atr.push( ' type="date" ');
+                 }else{
+                   var mask = this.getAttribute('mask_type')
+                   if (mask == "date"){
+                      atr.push( ' type="date" ');
+                   }else if (mask == "datetime"){
+                      atr.push( ' type="datetime-local" ');
+                   }else if (mask == "time"){
+                      atr.push( ' type="time" ');
+                   }
+                 }
+                 atr = atr.join(" ");
+                 var styleTxt = [];
+                 if (this.getAttribute('width')) { styleTxt.push('width:'+this.getAttribute('width')); }else{ styleTxt.push('width:120px ') }
+                 styleTxt = styleTxt.join(";");
+
+                 this.shadow.innerHTML = `<input  value="${this.getAttribute('name')}" min="${this.getAttribute('min')}" max="${this.getAttribute('max')}" step="${this.getAttribute('step')}"  ${atr}   style="${styleTxt}" />`;
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
         customElements.define('cmp-button', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
@@ -54,11 +229,14 @@
                    var styleTxt = [];
                    if (this.getAttribute('width')) { styleTxt.push('width:'+this.getAttribute('width')); }else{ styleTxt.push('width:100px ') }
                    if (!this.getAttribute('caption')) this.setAttribute('caption',"cmpButton");
+                   this.shadow.innerHTML = `<button name="${this.getAttribute('name')}" cmptype="Button" title="" class="button" title="${this.getAttribute('title')}"  style="${ styleTxt.join(';')}" >${this.getAttribute('caption')}</button>`;
+                   /*
                    this.shadow.innerHTML = `
                        <link rel="stylesheet" type="text/css" href="Component/Button/css/Button.css" delettag="1">
                        <div name="${this.getAttribute('name')}" cmptype="Button" title="${this.getAttribute('title')}" tabindex="0" class="ctrl_button box-sizing-force" style="${ styleTxt.join(';')}" >
                             <div class="btn_caption btn_center minwidth">${this.getAttribute('caption')}</div>
                        </div>`;
+                   */
               }
              connectedCallback() {
                 this.render();
@@ -181,46 +359,98 @@
                 tmpdataSetVar.innerHTML = ` <div  style="display:none;" ></div> `;
                 this.shadow.appendChild(tmpdataSetVar.content.cloneNode(true));
             }
-            constructor() {
-                super(); // always call super() first in the constructor.
+             connectedCallback() {
                 this.render();
              }
-             connectedCallback() {
+             attributeChangedCallback(name, oldValue, newValue) {
                 this.render();
              }
         });
         customElements.define('cmp-data-set', class extends HTMLElement {
-             constructor() {
-                super(); // always call super() first in the constructor.
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                   }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "DS_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
-                var tmpdataSet = document.createElement('template');
-                tmpdataSet.innerHTML = `
+                var tmpAction = document.createElement('template');
+                tmpAction.innerHTML = `
                   <div  style="display:none;" >
                      <slot></slot>
                   </div>
-                `;
-                var shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(tmpdataSet.content.cloneNode(true));
+                 `;
+                 this.shadow.appendChild(tmpAction.content.cloneNode(true));
+             }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
              }
         });
+
+
         customElements.define('cmp-action-var', class extends HTMLElement {
-            constructor() {
-                super(); // always call super() first in the constructor.
-                if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
-                if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_VAR_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
-                if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
-                var tmpActionVar = document.createElement('template');
-                tmpl.innerHTML = ` <div  style="display:none;" ></div> `;
-                var shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(tmpActionVar.content.cloneNode(true));
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                 if (!this.shadow) {
+                    this.shadow = this.attachShadow({mode: 'open'});
+                    if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                 }
+                 if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
+                 if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_VAR_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                 if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
+                 var tmpActionVar = document.createElement('template');
+                 tmpActionVar.innerHTML = ` <div  style="display:none;" ></div> `;
+                 this.shadow.appendChild(tmpActionVar.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
              }
         });
         customElements.define('cmp-action', class extends HTMLElement {
-             constructor() {
-                super(); // always call super() first in the constructor.
+              shadow = null;
+              static get observedAttributes() {
+                return ['width','name', 'data','value'];
+              }
+              render() {
+                   if (!this.shadow) {
+                        this.shadow = this.attachShadow({mode: 'open'});
+                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+                   }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpAction = document.createElement('template');
-                tmpl.innerHTML = `
+                tmpAction.innerHTML = `
+                  <div  style="display:none;" >
+                     <slot></slot>
+                  </div>
+                 `;
+                 this.shadow.appendChild(tmpAction.content.cloneNode(true));
+              }
+             connectedCallback() {
+                this.render();
+             }
+             attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+             }
+        });
+
+        customElements.define('cmp-popup-menu', class extends HTMLElement {
+             constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                var tmpAction = document.createElement('template');
+                this.innerHTML = `
                   <div  style="display:none;" >
                      <slot></slot>
                   </div>
@@ -229,6 +459,38 @@
                 shadowRoot.appendChild(tmpAction.content.cloneNode(true));
              }
         });
+
+        customElements.define('cmp-auto-popup-menu', class extends HTMLElement {
+             constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_AUTO_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                var tmpAction = document.createElement('template');
+                tmpAction.innerHTML = `
+                  <div  style="display:none;" >
+                     <slot></slot>
+                  </div>
+                `;
+                var shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(tmpAction.content.cloneNode(true));
+             }
+        });
+
+        customElements.define('cmp-popup-item', class extends HTMLElement {
+            constructor() {
+                super(); // always call super() first in the constructor.
+                if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
+                if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_ITEM_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
+                if (!this.getAttribute('src')) {this.setAttribute('src',this.getAttribute('name')); }
+                var tmpActionVar = document.createElement('template');
+                tmpActionVar.innerHTML = ` <div  style="display:none;" ></div> `;
+                var shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(tmpActionVar.content.cloneNode(true));
+             }
+        });
+
+
+
+
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
@@ -236,7 +498,6 @@
 
 /*
     Переписать компоненты на шаблоны
-
     <my-header></my-header>
     <my-module>
       <h2 slot="header">My Module</h2>

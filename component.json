@@ -99,8 +99,19 @@
         "innerHtmlToCaption": false,
         "caption": "cmpLabe",
         "innerHTML": "",
-        "propertyVariant": {"data": ["  ","caption:{dataname}"],"name":"string" ,
+        "propertyVariant": {"data": ["  ","caption:{dataname}"],"name":[null,""] ,
           "caption": "string"
+        },
+        "notContentInnerHTML": true
+       },{
+        "leaf": true,
+        "text": "cmpHyperLink",
+        "tagName": "cmp-hyper-link",
+        "innerHtmlToCaption": false,
+        "caption": "cmpHyperLink",
+        "innerHTML": "",
+        "propertyVariant": {"data": [null,"  ","caption:{dataname}"],"name":[null,""] ,
+                            "caption": [null,""], "onclick": [null,"Form.{funName}"]
         },
         "notContentInnerHTML": true
        },
@@ -115,8 +126,8 @@
         "class": [],
         "width": "100px",
         "height": "20px",
-        "propertyVariant": {"name":"string","width": "number","caption": "string" },
-        "propertyMandatory": {"name":"string"},
+        "propertyVariant": {"name":[null,""],"width": "number","caption": "string" },
+        "propertyMandatory": {"name":[null,""]},
         "notContentInnerHTML": true
       },
        {
@@ -125,13 +136,29 @@
         "tagName": "cmp-button-edit",
         "property": {},
         "innerHtmlToCaption": true,
-        "innerHTML": "cmp-button-edit",
          "class": [],
         "width": "100px",
         "height": "20px",
-        "propertyVariant": {"name":"string","clearbutton": [null,"true","false"],"onbuttonclick": "event"
+        "propertyVariant": {"name":[null,""],"clearbutton": [null,"true","false"],"onbuttonclick":[null,"Form.{funName}(this);"],
+                            "width": "number","readonly":[null,"true","false"]
         },
-        "propertyMandatory": {"name":"string"},
+        "propertyMandatory": {"name":[null,""]},
+        "notContentInnerHTML": true
+      },
+      {
+        "leaf": true,
+        "text": "cmpUnitEdit",
+        "tagName": "cmp-unit-edit",
+        "property": {},
+        "innerHtmlToCaption": true,
+         "class": [],
+        "width": "100px",
+        "height": "20px",
+        "propertyVariant": {"name":[null,""],"clearbutton": [null,"true","false"],"onbuttonclick":[null,"Form.{funName}(this);"],
+                            "width": "number","readonly":[null,"true","false"],"data": [null,""],"value": [null,""],"unit": [null,""],
+                            "composition": [null,""]
+        },
+        "propertyMandatory": {"name":[null,""]},
         "notContentInnerHTML": true
       },
        {
@@ -144,8 +171,8 @@
          "class": [],
         "width": "100px",
         "height": "20px",
-        "propertyVariant": {"name":"string","width": "number"},
-        "propertyMandatory": {"name":"string"},
+        "propertyVariant": {"name":[null,""],"width": "number"},
+        "propertyMandatory": {"name":[null,""]},
         "notContentInnerHTML": true
       },
        {
@@ -159,7 +186,7 @@
         "width": "100px",
         "height": "20px",
         "propertyVariant": {"name":[null,""],"caption": "string","value":"string","repeat": [null,"0","1"],"dataset": "string","data":[null,"value:ID;caption:PK_NAME"]},
-        "propertyMandatory": {"name":"string"},
+        "propertyMandatory": {"name":[null,""]},
         "notContentInnerHTML": true,
         "parentTag": ["cmp-combo-box"]
        },
@@ -169,8 +196,8 @@
         "tagName": "cmp-text-area",
         "innerHtmlToValue": true,
         "innerHTML": "",
-        "propertyVariant": {"name":"string", "value":"string" },
-        "propertyMandatory": {"name":"string"},
+        "propertyVariant": {"name":[null,""], "value":"string" },
+        "propertyMandatory": {"name":[null,""]},
         "class": [],
         "notContentInnerHTML": true
       },
@@ -180,26 +207,75 @@
         "tagName": "cmp-edit",
         "innerHtmlToValue": true,
         "innerHTML": "",
-        "propertyVariant": {"name":"string","mask_type": [null,"time","data","numberlen:{string},{string}"] ,"width":"string",
+        "propertyVariant": {"name":[null,""],"mask_type": [null,"time","data","numberlen:{string},{string}"] ,"width":"string",
                             "placeholder":"string" ,"maxlength":"number","enabled": [null,"false","true"],
                             "enabled":[null,"true","false"]
         },
-        "propertyMandatory": {"name":"string"},
+        "propertyMandatory": {"name":[null,""]},
         "class": [],
         "notContentInnerHTML": true
       },
       {
         "leaf": true,
         "text": "cmpDateEdit",
-        "tagName": "cmp-date-edit",
-        "innerHtmlToValue": true,
+        "tagName": "cmp-data-edit",
+        "innerHtmlToValue": false,
         "innerHTML": "",
-        "propertyVariant": { "name":"string", "today":["true",null],"data":"string", "width":"string","shows_time":["true",null],
-                             "emptyMask":["true","false",null],"typeMask":["datetime","date","time",null],"readonly": [null,"true","false"]
+        "propertyVariant": {"name":[null,""],"mask_type": [null,"time","date","datetime"] , "emptyMask":[null,"true","false"],
+                            "placeholder":"string" ,"maxlength":"number",
+                            "width":"string","enabled":[null,"true","false"]
         },
-        "propertyMandatory": {"name":"string"},
+        "propertyMandatory": {"name":[null,""]},
         "class": [],
         "notContentInnerHTML": true
+      },
+      {
+        "leaf": true,
+        "text": "cmpRadioGroup",
+        "tagName": "cmp-radio-group",
+        "innerHtmlToValue": false,
+        "innerHTML": "",
+        "propertyVariant": {"name":[null,""],"enabled": [null,"false","true"],"width":"string","value": [null,""]
+        },
+        "propertyMandatory": {"name":[null,""]},
+        "class": [],
+        "notContentInnerHTML": false
+      },{
+        "leaf": true,
+        "text": "cmpRadioItem",
+        "tagName": "cmp-radio-item",
+        "innerHtmlToValue": false,
+        "innerHTML": "",
+        "propertyVariant": {"name":[null,""],"enabled": [null,"false","true"],"width":"string","value": [null,""],"caption": [null,""]
+        },
+        "propertyMandatory": {"name":[null,""]},
+        "class": [],
+        "notContentInnerHTML": true,
+        "parentTag": ["cmp-radio-group"]
+      },
+      {
+          "leaf": true,
+          "text": "cmpPopupMenu",
+          "tagName": "cmp-popup-menu",
+          "innerHTML": "",
+          "propertyVariant": {"name":[null,""], "popupobject":[null,""],"onpopup": [null,""] }
+      },{
+
+          "leaf": true,
+          "text": "cmpPopupItem",
+          "tagName": "cmp-popup-item",
+          "innerHTML": "",
+          "propertyVariant": {"name":[null,""], "caption":[null,"-"],"onclick":[null," "] ,"icon":[null," "] },
+          "parentTag": ["cmp-popup-menu","cmp-auto-popup-menu"],
+          "notContentInnerHTML": true
+      },{
+          "leaf": true,
+          "text": "cmpAutoPopupMenu",
+          "tagName": "cmp-auto-popup-menu",
+          "innerHTML": "",
+          "propertyVariant": {"name": [null,""], "unit": [null," "],"service": [null,"true","false"],"all": [null,"true","false"],
+                              "join_menu": [null," "],"popupobject": [null," "],"reports": [null,"true","false"]
+          }
       },
       {
         "text": "DataBase",
@@ -211,7 +287,7 @@
               "leaf": true,
               "text": "cmpDataSet",
               "tagName": "cmp-data-set",
-              "propertyVariant": {"name":"string","activateoncreate": [null,"false","true"],"compile": [null,"false","true"] },
+              "propertyVariant": {"name":[null,""],"activateoncreate": [null,"false","true"],"compile": [null,"false","true"] },
               "class": [],
                "innerHTML": "\r<![CDATA[\r -- SQL query \r      ]]>\r"
             },
@@ -220,8 +296,8 @@
               "text": "cmpDataSetVar",
               "tagName": "cmp-data-set-var",
               "innerHTML": "",
-              "propertyVariant": {"name":"string", "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":[null,"g{name}"]},
-              "propertyMandatory": {"name":"string"} ,
+              "propertyVariant": {"name":[null,""], "src":"string", "srctype": ["var","ctrl","{name}_Ctrl:caption"],"get":[null,"g{name}"]},
+              "propertyMandatory": {"name":[null,""]} ,
               "parentTag": ["cmp-data-set"],
               "class": [],
               "notContentInnerHTML": true
@@ -231,12 +307,12 @@
               "text": "cmpAction",
               "tagName": "cmp-action",
               "innerHTML": "\r<![CDATA[\r -- SQL query \r      ]]>\r",
-              "propertyVariant": {"name":"string",
+              "propertyVariant": {"name":[null,""],
                                 "compile":["true","false"],
                                 "mode":["post","get"],
                                 "max_exec_time":"number"
               },
-              "propertyMandatory": {"name":"string"} ,
+              "propertyMandatory": {"name":[null,""]} ,
               "class": []
             },
             {
@@ -244,9 +320,11 @@
               "text": "cmpActionVar",
               "tagName": "cmp-action-var",
               "innerHTML": "",
-              "propertyVariant": {"name":"string", "src":"string", "srctype": ["session","var","ctrl","ctrl:caption","{name}_Ctrl:caption"],
-                                  "property": "string","put":[null,"p{name}"],"get":[null,"g{name}"] ,"len":"number" },
-              "propertyMandatory": {"name":"string"},
+              "propertyVariant": {"name":[null,""], "src":"string", "srctype": ["session","var","ctrl","ctrl:caption","{name}_Ctrl:caption"],
+                                  "property": "string","put":[null,"p{name}"],"get":[null,"g{name}"] ,"len":"number",
+                                  "unit":[null,""], "action":[null,""]
+              },
+              "propertyMandatory": {"name":[null,""]},
               "parentTag": ["cmp-action"],
               "class": [],
               "notContentInnerHTML": true
@@ -265,7 +343,12 @@
           "text": "DIV",
           "tagName": "div",
           "innerHtmlToCaption": false,
-          "innerHTML": "div_block"
+          "innerHTML": "div_block",
+          "propertyVariant": {"name":[null,""], "cmptype":[null,"tmp"],"repeat": [null,"0","1"],"repeatername": [null,""],
+                            "dataset": [null,""],"parent":[null,"{repeatername}:{keyfield}"], "distinct": [null,""],"keyfield": [null,""],
+                            "onafter_clone": [null,"Form.{funName}(clone, data);"],"onafter_refresh":[null, "Form.{funName}();"],
+                            "onbefore_clone": [null,"Form.{funName}(data);"]
+            }
         },
         {
           "leaf": true,
@@ -293,7 +376,12 @@
                 "text": "TABLE",
                 "tagName": "table",
                 "innerHtmlToCaption": false,
-                "innerHTML": "<tbody><tr><td>___</td></tr></tbody>"
+                "innerHTML": "<tbody><tr><td>___</td></tr></tbody>",
+                "propertyVariant": {"name":[null,""], "cmptype":[null,"tmp"],"repeat": [null,"0","1"],"repeatername": [null,""],
+                            "dataset": [null,""],"parent":[null,"{repeatername}:{keyfield}"], "distinct": [null,""],"keyfield": [null,""],
+                            "onafter_clone": [null,"Form.{funName}(clone, data);"],"onafter_refresh":[null, "Form.{funName}();"],
+                            "onbefore_clone": [null,"Form.{funName}(data);"]
+                }
               },
               {
                 "leaf": true,
@@ -301,7 +389,12 @@
                 "tagName": "tr",
                 "parentTag": ["tbody","thead","tfoot"],
                 "innerHtmlToCaption": false,
-                "innerHTML": "<td>___</td>"
+                "innerHTML": "<td>___</td>",
+                "propertyVariant": {"name":[null,""], "cmptype":[null,"tmp"],"repeat": [null,"0","1"],"repeatername": [null,""],
+                            "dataset": [null,""],"parent":[null,"{repeatername}:{keyfield}"], "distinct": [null,""],"keyfield": [null,""],
+                            "onafter_clone": [null,"Form.{funName}(clone, data);"],"onafter_refresh":[null, "Form.{funName}();"],
+                            "onbefore_clone": [null,"Form.{funName}(data);"]
+                }
               },
               {
                 "leaf": true,
@@ -309,7 +402,12 @@
                 "tagName": "td",
                 "parentTag": ["tr"],
                 "innerHtmlToCaption": false,
-                "innerHTML": "<td>___</td>"
+                "innerHTML": "<td>___</td>",
+                "propertyVariant": {"name":[null,""], "cmptype":[null,"tmp"],"repeat": [null,"0","1"],"repeatername": [null,""],
+                            "dataset": [null,""],"parent":[null,"{repeatername}:{keyfield}"], "distinct": [null,""],"keyfield": [null,""],
+                            "onafter_clone": [null,"Form.{funName}(clone, data);"],"onafter_refresh":[null, "Form.{funName}();"],
+                            "onbefore_clone": [null,"Form.{funName}(data);"]
+                }
               },
               {
                 "leaf": true,

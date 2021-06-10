@@ -12,6 +12,7 @@
     <link href="builder.css" rel="stylesheet" />
     <script type="text/javascript" src="lib/ExtJS_6.0.0/ext-all.js"></script>
     <script type="text/javascript" src="lib/system.js"></script>
+    <script type="text/javascript" src="component.js"></script>
     <script type="text/javascript">
 
         // --------------- Вдохновение получил из источников -----------
@@ -43,6 +44,7 @@
                 if (info["innerHTML"]) tagInfoList[keyRes]["innerHTML"] = info["innerHTML"];
                 if (info["parentTag"]) tagInfoList[keyRes]["parentTag"] = info["parentTag"];
                 if (info["class"]) tagInfoList[keyRes]["class"] = info["class"];
+                if (info["notContentInnerHTML"]) tagInfoList[keyRes]["notContentInnerHTML"] = info["notContentInnerHTML"];
                 if (componentListJson[key].children) {
                     structToArr(componentListJson[key].children, tagInfoList);
                 }
@@ -51,12 +53,15 @@
         structToArr(componentListJson, tagInfoList);
         var arrTagDst = [];
         var arrTagStr = [];
+        var arrTagDelClose = []; // список тэгов  у которых необходимо убрать закрывающийся тэг
         for (var key in tagInfoList) {
             if (key.indexOf('-') == -1) continue;
+            if ((tagInfoList[key]["notContentInnerHTML"]) && (tagInfoList[key]["notContentInnerHTML"]) == true){
+               arrTagDelClose.push(toCamelCase(key));
+            }
             arrTagDst.push(toCamelCase(key));
             arrTagStr.push(key);
         }
-
 
         Ext.onReady(function() {
             var domHTMLTreeStory = Ext.create('Ext.data.TreeStore', {
@@ -118,7 +123,28 @@
                                         loadEmploePage("");
                                     }
                                 }
+                            },{
+                               text: 'Templates form',
+                               menu: [
+                                   {
+                                      text: 'Report D3',
+                                      listeners: {
+                                        click: function() {
+                                           loadEmploePage("templates/report.html");
+                                        }
+                                      }
+                                   },
+                                    {
+                                     text: 'Gred D3(не дописан компонент Gred!!!)',
+                                     listeners: {
+                                         click: function() {
+                                            loadEmploePage("templates/gred.html");
+                                         }
+                                      }
+                                    }
+                               ]
                             }
+
                         ]
                     }, {
                         text: 'Edit',
@@ -140,12 +166,26 @@
                             }
                         ]
                     }, {
-                        text: 'SaveToClipboard',
-                        listeners: {
-                            click: function() {
-                                saveWebForm();
+                        text: 'Save form',
+                        menu: [{
+                                text: 'Save HTML to Clipboard',
+                                listeners: {
+                                    click: function() {
+                                       TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
+                                       saveWebForm(TmpElement);
+                                    }
+                                }
+                            },
+                            {
+                                text: 'Save D3 form',
+                                listeners: {
+                                    click: function() {
+                                       TmpElement = ContentEditorDocume.document.getElementsByTagName('body')[0].children[0].cloneNode(true);
+                                       saveWebForm(TmpElement);
+                                    }
+                                }
                             }
-                        }
+                        ]
                     }, {
                         text: 'LoadFromClipboard',
                         listeners: {
@@ -638,6 +678,7 @@
                                         if (record.data.value) {
                                             NewObjectElement.setAttribute("value", record.data.value);
                                         }
+                                        console.log(NewObjectElement);
                                     }
                                 }
                             }
@@ -734,7 +775,7 @@
                             window.event.returnValue = false;
                         });
                     }
-                    window.loadScriptIframe("component.js", 3000, ContentEditorDocume).then(function() {}, function(error) {
+                    window.loadScriptIframe("component.js?"+getRandomInt(999999), 3000, ContentEditorDocume).then(function() {}, function(error) {
                         console.log(error);
                     });
                     window.loadCSSIFrame("component.css", 3000, ContentEditorDocume).then(function() {}, function(error) {
@@ -765,7 +806,7 @@
                             bodyText.replaceAll(arrTagDst[ind], arrTagStr[ind]);
                         }
                         bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                        bodyText = bodyText.replaceAll(']]-->', ' ]]>');
+                        bodyText = bodyText.replaceAll(']]-->', ']]>');
                         console.log(bodyText);
                         var parser = new DOMParser();
                         var xmlDoc = parser.parseFromString(bodyText, "text/xml");
@@ -796,8 +837,8 @@
                     };
                 }
             }
-            var saveWebForm = function() {
-                TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
+            var saveWebForm = function(TmpElement ) {
+                // TmpElement = ContentEditorDocume.document.getElementsByTagName('html')[0].cloneNode(true);
                 var bodyText = TmpElement.outerHTML;
                 bodyText = bodyText.replaceAll('style="position: absolute; top: 0px; left: 0px;"', '');
                 bodyText = bodyText.replaceAll('class="selectElement"', '');
@@ -814,13 +855,17 @@
                 bodyText = bodyText.replaceAll('cmp-data-set-var', 'cmpDataSetVar');
                 for (var ind in arrTagStr) {
                     bodyText = bodyText.replaceAll(arrTagStr[ind] + "", arrTagDst[ind] + "");
-                    bodyText = bodyText.replaceAll('></' + arrTagDst[ind] + '>', '/>');
+                    //bodyText = bodyText.replaceAll('></' + arrTagDst[ind] + '>', '/>');
                     //console.log(arrTagStr[ind] + "", arrTagDst[ind] + "");
+                }
+                for (var ind in arrTagDelClose) {
+                    bodyText = bodyText.replaceAll('></' + arrTagDelClose[ind] + '>', '/>');
                 }
                 // --------------------------------------------------
                 bodyText = bodyText.replaceAll('<br>', '<br/>');
+                bodyText = bodyText.replaceAll('<hr>', '<hr/>');
                 bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                bodyText = bodyText.replaceAll(']]-->', ' ]]>');
+                bodyText = bodyText.replaceAll(']]-->', ']]>');
                 // TmpElement.outerHTML = bodyText;
                 // TmpElement.innerHTML = bodyText;
                 // var bodyText = TmpElement.innerHTML
@@ -1074,7 +1119,7 @@
                 bodyText = bodyText.replaceAll('</head><body>', '</head>\r<body>');
                 bodyText = bodyText.replaceAll('      </body>', '</body>');
                 bodyText = bodyText.replaceAll('<!--[CDATA[', '<![CDATA[');
-                bodyText = bodyText.replaceAll(']]-->', ' ]]>');
+                bodyText = bodyText.replaceAll(']]-->', ']]>');
                 return bodyText
             }
 
@@ -1096,14 +1141,6 @@
                     ContentEditorDocumeIframe.setAttribute("scrolling", "no");
                 }
             }
-            window.contextMenuSetFontSize = function(btn) {
-                if (selectElement != null) {
-                    console.log("contextMenuExec", btn.innerHTML);
-                    console.log("selectElement", selectElement);
-                    selectElement.style.fontSize = btn.innerHTML;
-                }
-            }
-
             testParentTag = function(selectElement, NewObjectElement) {
                 // информация о компоненте
                 var keyTag = NewObjectElement.tagName.toLowerCase();
@@ -1290,6 +1327,9 @@
                     var typ = typeof selectElement[ind];
                     if (ind.substr(0, 2) == 'on') typ = 'event';
                     if (typ == 'function') continue;
+                    if (ind == 'style') {
+                        typ = "string";
+                    }
                     var val = selectElement.getAttribute(ind)
                     // console.log(ind, typ, val)
                     if (ind == "style") {
@@ -1314,10 +1354,14 @@
                     opt.push("</td>");
                     opt.push("<td>");
                     if (typ == "string") {
-                        opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                        opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
+                        opt.push(`<option value="null" />`);
+                        opt.push(`<option value="" />`);
+                        opt.push(`</datalist>`);
+                        opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
                     }
                     if (typ == "number") {
-                        opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="number" />`);
+                        opt.push(`  <input propname="${ind}"  style='width:94%'  value="${val}" onchange="changeElementVal(this)" type="number" />`);
                     }
                     if (typ == "boolean") {
                         opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
@@ -1328,7 +1372,11 @@
                         opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
                     }
                     if (typ == "event") {
-                        opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text" />`);
+                        opt.push(`<datalist id="LIST-${ind}" value="${val}">`);
+                        opt.push(`<option value="null" />`);
+                        opt.push(`<option value="" />`);
+                        opt.push(`</datalist>`);
+                        opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
                     }
                     opt.push("</td>");
                     opt.push("</tr>");

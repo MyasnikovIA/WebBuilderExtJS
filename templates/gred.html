@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div cmptype="Form" class="d3form formBackground" caption="Form2"   oncreate="Form.onCreate();" onshow="Form.onShow();" >
+        <!--
+        @args
+        openD3Form('#templates/Form2', true, {width: 800, height: 600});
+        -->
+
+        <cmp-script>
+          <![CDATA[
+            Form.onCreate = function () {
+                setVar('DEPS', $_GET['DEPS']);
+            }
+            Form.onShow = function () {
+                executeAction('InitAction', function(){ });
+            }
+            Form.onButtonOk = function() {
+                close({param: null});
+            };
+          ]]>
+        </cmp-script>
+
+        <cmp-action name="InitAction">
+          <![CDATA[
+            begin
+              null;
+            end;
+          ]]>
+            <cmp-actionVar name="LPU" src="LPU" srctype="session"/>
+            <cmp-actionVar name="IN"  src="IN"  srctype="var" get="gIN"/>
+            <cmp-actionVar name="OUT" src="OUT" srctype="var" put="pOUT" len="17"/>
+        </cmp-action>
+
+        <cmp-dataSet name="DsMain">
+          <![CDATA[
+            select 'A0' A,
+                   'B0' B,
+                   'C0' C
+              from dual
+            union all
+            select 'A1',
+                   'B1',
+                   'C1'
+              from dual
+          ]]>
+            <cmp-data-set-var name="ID" src="ID" srctype="var" get="vID" />
+        </cmp-dataSet>
+
+        <cmp-grid name="GridMain" caption="GridMain"
+                 dataset="DsMain" keyfield="ID" calc_height="parent-#.form-bottom#">
+            <cmp-column caption="A" field="A" filter="A" sort="A" sortorder="-1"/>
+            <cmp-column caption="B" field="B" filter="B" sort="B"/>
+            <cmp-column caption="C" field="C" filter="C"/>
+            <cmp-grid-footer>
+                <cmpRange dataset="DsMain" default_amount="10"/>
+            </cmp-grid-footer>
+        </cmp-grid>
+
+        <cmp-popup-menu name="PopupGridMain" popupobject="GridMain">
+            <cmp-popup-item name="piRefresh" caption="Обновить" onclick="refreshDataSet('DsMain');"
+                          icon="~CmpPopupMenu/Icons/refresh"/>
+            <!--<cmpPopupItem name="piSEP" caption="-"/>-->
+        </cmp-popup-menu>
+
+        <div class="form-bottom">
+            <cmp-button name="ButtonOk" onclick="Form.onButtonOk();" caption="Ок"/>
+            <cmp-button name="ButtonCancel" onclick="close();" caption="Отмена"/>
+        </div>
+
+        <style>
+            .form-bottom {
+                float: right;
+                padding: 8px 0 3px;
+            }
+        </style>
+
+</div>
+</body>
+</html>
