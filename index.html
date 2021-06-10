@@ -307,13 +307,18 @@
                                 },
                                 {
                                     region: 'north',
-                                    height: 400,
+                                    height: (document.documentElement.clientHeight * 0.412),
                                     split: true,
                                     id: 'domTreeView',
                                     xtype: 'treepanel',
                                     rootVisible: false,
                                     autoScroll: true,
                                     store: domHTMLTreeStory,
+                                    style: {
+                                         maxHeight: ((document.documentElement.clientHeight * 0.412)+'px'),
+                                         overflow:'auto'
+                                    },
+                                    autoScroll: true,
                                     listeners: {
                                         itemclick: function(tree, record, item, index, e, options) {
                                             var nodeText = record.data.text;
@@ -588,7 +593,7 @@
                     }, {
                         xtype: 'panel',
                         title: 'Element list',
-                        html: 'Правая панель',
+                        html: '',
                         region: 'east',
                         width: 200,
                         split: true,
@@ -623,9 +628,13 @@
                             {
                                 region: 'north',
                                 width: 200,
-                                height: 4000,
+                                height: '100%',
                                 split: true,
                                 xtype: 'treepanel',
+                                style: {
+                                    maxHeight: ((document.documentElement.clientHeight * 0.9)+'px'),
+                                    overflow:'auto'
+                                },
                                 autoScroll: true,
                                 split: true,
                                 rootVisible: false,
@@ -765,10 +774,10 @@
                     if (pathPage.length > 0) {
                         ContentEditorDocume.document.write(getTextUrl(pathPage));
                     } else {
-                        if (Mozila) {
-                          ContentEditorDocume.document.write(`<html><head></head><body style="height:100%;width:100%;" ></body></html>`);
-                        }else{
+                        if (Chrome) {
                           ContentEditorDocume.document.write(`<html><head></head><body></body></html>`);
+                        }else{
+                          ContentEditorDocume.document.write(`<html><head></head><body style="height:100%;width:100%;" ></body></html>`);
                         }
                     }
                     if (ContentEditorDocume.document.addEventListener) {
