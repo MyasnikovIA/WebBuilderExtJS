@@ -1081,8 +1081,8 @@
             var newWin = null;
             var dblClickElement = function(event) {
                 if (selectElement != null) {
-                    /*
-                       var win = Ext.create('Ext.window.Window', {
+                      if(typeof newWinExtJS !== 'undefined')  newWinExtJS.close();
+                      newWinExtJS = Ext.create('Ext.window.Window', {
                             title: 'EditElement',
                             closeAction: 'destroy',
                             height: 800,
@@ -1091,41 +1091,67 @@
                             top:30,
                             layout: 'fit',
                             modal:true,
-                            html: `
-                                            <div colspan="3">
-                                                <textarea id="contentText" style="width: 100%;" rows="49" ></textarea>
-                                            </div>
-                                            <div style="text-align:right;">
-                                                <button id="btnSave">save</button>
-                                            </div>
-                             `
+                            items: [{
+                                        xtype: 'panel',
+                                        title: ' ',
+                                        region: 'west',
+                                        width: 400,
+                                        split: true,
+                                        items: [
+                                            {
+                                                xtype     : 'textareafield',
+                                                id        : 'contentHtmlText',
+                                                grow      : true,
+                                                width      : 400,
+                                                height    :  300,
+                                                style: {
+                                                     minHeight: ((document.documentElement.clientHeight * 0.81)+'px'),
+                                                     minWidth:  ((document.documentElement.clientWidth * 0.78 )+'px'),
+                                                     overflow:'auto'
+                                                },
+                                            },
+                                            {
+                                               xtype: 'panel',
+                                               region: 'south',
+                                               height: 28,
+                                               dockedItems: [
+                                                  {
+                                                    xtype: 'toolbar',
+                                                    dock: 'bottom',
+                                                    items: ['->',{
+                                                        text: 'Save',
+                                                        listeners: {
+                                                            click: function() {
+                                                                 selectElement.outerHTML = Ext.getCmp('contentHtmlText').getValue();
+                                                                 newWinExtJS.close();
+                                                            }
+                                                        }
+                                                    }]
+                                                  }
+                                               ]
+                                            }
+                                        ]
+                                     }
+                            ]
                             ,listeners:{
-                                close:function(){
-
-                                },
+                                close:function(){ },
                                 show:function(){
-                                    var textEdit =  document.getElementById("contentText");
                                     var TmpSelectElement = selectElement.cloneNode(true);
-                                    textEdit.innerHTML = clearSystemTextFromEditContent(TmpSelectElement.outerHTML);
-                                    document.getElementById("btnSave").onclick = function(){
-                                         // var infoComponent = selectElement.getAttribute("delettag_build_element_tree_id");
-                                         var textEditSave =  document.getElementById("contentText");
-                                         console.log(textEditSave.value);
-                                         console.log(selectElement);
-                                         selectElement.outerHTML = textEditSave.value;
-                                         win.close();
-                                    };
+                                    html = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) )
+                                    Ext.getCmp('contentHtmlText').setValue(html);
                                 }
                             }
                         });
-                        win.show();
-                      return;
-                      */
+                        newWinExtJS.show();
+                    return;
+                    /*
+                    if(newWin)  newWin.close();
                     newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=1200,height=600,left=320,top=240');
                     newWin.onload = function() {
                         var textEdit = newWin.document.getElementById("contentText");
                         var TmpSelectElement = selectElement.cloneNode(true);
-                        textEdit.innerHTML = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) );
+                        textEdit.innerHTML = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) )
+                        bodyText = textEdit.innerHTML.replaceAll('\r', '\r\n');
                         newWin.document.getElementById("btnSave").onclick = function() {
                             selectElement.outerHTML = newWin.document.getElementById("contentText").value;
                             newWin.close();
@@ -1136,6 +1162,7 @@
                             }
                         };
                     }
+                    */
                 }
             }
             var clearSystemTextFromEditContent = function(bodyText) {
