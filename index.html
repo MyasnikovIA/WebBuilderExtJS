@@ -193,7 +193,7 @@
                             }
                         ]
                     }, {
-                        text: 'LoadFromClipboard',
+                        text: 'LoadFromClipboard(в разработке)',
                         listeners: {
                             click: function() {
                                 LoadWebForm();
@@ -1085,8 +1085,8 @@
                       newWinExtJS = Ext.create('Ext.window.Window', {
                             title: 'EditElement',
                             closeAction: 'destroy',
-                            height: 800,
-                            width: 1000,
+                            height: (document.documentElement.clientHeight*0.9),
+                            width: (document.documentElement.clientWidth*0.9),
                             left:30,
                             top:30,
                             layout: 'fit',
@@ -1094,22 +1094,8 @@
                             items: [{
                                         xtype: 'panel',
                                         title: ' ',
-                                        region: 'west',
-                                        width: 400,
                                         split: true,
                                         items: [
-                                            {
-                                                xtype     : 'textareafield',
-                                                id        : 'contentHtmlText',
-                                                grow      : true,
-                                                width      : 400,
-                                                height    :  300,
-                                                style: {
-                                                     minHeight: ((document.documentElement.clientHeight * 0.81)+'px'),
-                                                     minWidth:  ((document.documentElement.clientWidth * 0.78 )+'px'),
-                                                     overflow:'auto'
-                                                },
-                                            },
                                             {
                                                xtype: 'panel',
                                                region: 'south',
@@ -1133,6 +1119,17 @@
                                                     }]
                                                   }
                                                ]
+                                            },
+                                            {
+                                                xtype     : 'textareafield',
+                                                id        : 'contentHtmlText',
+                                                region: 'north',
+                                                grow      : true,
+                                                style: {
+                                                     minHeight: '100%',
+                                                     minWidth: '100%',
+                                                     overflow:'auto'
+                                                },
                                             }
                                         ]
                                      }

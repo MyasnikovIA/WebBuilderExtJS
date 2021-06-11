@@ -12,3 +12,11 @@ https://raw.githack.com/
 beautify-web
 <br/>The MIT License (MIT)  
 <br/>https://github.com/beautify-web/js-beautify
+
+
+
+
+<img src="https://github.com/MyasnikovIA/WebBuilderExtJS/blob/master/img/blockMove.png?raw=true"/><br/>
+Компоненты из этой группы можно перемещать курсором (10px)
+Если зажать Shift+Курсор, то размер будет меняться
+Если зажать Ctrl+Курсор , то блок  перемещается  по 1px
