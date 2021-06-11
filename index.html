@@ -1122,7 +1122,11 @@
                                                         text: 'Save',
                                                         listeners: {
                                                             click: function() {
-                                                                 selectElement.outerHTML = Ext.getCmp('contentHtmlText').getValue();
+                                                                 if ((selectElement.tagName.toLowerCase() == 'html')||(selectElement.tagName.toLowerCase() == 'body')){
+                                                                     Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотре ');
+                                                                 } else {
+                                                                    selectElement.outerHTML = Ext.getCmp('contentHtmlText').getValue();
+                                                                 }
                                                                  newWinExtJS.close();
                                                             }
                                                         }
@@ -1136,6 +1140,9 @@
                             ,listeners:{
                                 close:function(){ },
                                 show:function(){
+                                    if ((selectElement.tagName.toLowerCase() == 'html')||(selectElement.tagName.toLowerCase() == 'body')){
+                                        Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотре ');
+                                    }
                                     var TmpSelectElement = selectElement.cloneNode(true);
                                     html = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) )
                                     Ext.getCmp('contentHtmlText').setValue(html);
