@@ -1123,7 +1123,7 @@
                                                         listeners: {
                                                             click: function() {
                                                                  if ((selectElement.tagName.toLowerCase() == 'html')||(selectElement.tagName.toLowerCase() == 'body')){
-                                                                     Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотре ');
+                                                                     Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотра ');
                                                                  } else {
                                                                     selectElement.outerHTML = Ext.getCmp('contentHtmlText').getValue();
                                                                  }
@@ -1141,7 +1141,7 @@
                                 close:function(){ },
                                 show:function(){
                                     if ((selectElement.tagName.toLowerCase() == 'html')||(selectElement.tagName.toLowerCase() == 'body')){
-                                        Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотре ');
+                                        Ext.Msg.alert('Error!', ' Элемент '+selectElement.tagName+' доступен только в режиме просмотра ');
                                     }
                                     var TmpSelectElement = selectElement.cloneNode(true);
                                     html = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) )
