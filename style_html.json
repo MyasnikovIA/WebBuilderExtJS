@@ -1,0 +1,57 @@
+{
+   "display": {"info":"http://htmlbook.ru/css/display", "variant":["block","inline","inline-block","flex","inline-flex","grid","inline-grid","flow-root","none","contents","block flow","inline flow","inline flow-root","block flex","inline flex","block grid","inline grid","block flow-root","table","table-row","list-item","inherit","initial","unset"]}
+  ,"position":{"info":"http://htmlbook.ru/css/position","variant":["absolute","fixed","relative","static","inherit"]}
+  ,"backgroundRepeat":{"info":"http://htmlbook.ru/css/background-repeat","variant":["no-repeat","repeat","repeat-x","repeat-y","inheritno-repeat","repeat","repeat-x","repeat-y","inherit"]}
+  ,"background":{"info":"http://htmlbook.ru/css/background","variant":["","url(images/hand.png) repeat-y rgb(200,200,200)"]}
+  ,"backgroundAttachment":{"info":"http://htmlbook.ru/css/background-attachment","variant":["fixed","scroll","local[, fixed","scroll","local"]}
+  ,"backgroundClip":{"info":"http://htmlbook.ru/css/background-clip","variant":["padding-box","border-box","content-box","padding-box","border-box","content-box"]}
+  ,"backgroundColor":{"info":"http://htmlbook.ru/css/background-color","variant":[ "","rgba(100,100,100,0.8)","rgb(100,100,100)","transparent","inherit"]}
+  ,"backgroundImage":{"info":"http://htmlbook.ru/css/background-image","variant":[ "","url('images/bg.jpg')","none","inherit"]}
+  ,"backgroundOrigin":{"info":"http://htmlbook.ru/css/background-origin","variant":[ "padding-box","border-box","content-box] [, [padding-box","border-box","content-box" ]}
+  ,"backgroundPosition":{"info":"http://htmlbook.ru/css/background-position","variant":[ "left","center","right","top","bottom","20% 30%","right bottom","left bottom","right top","left top"]}
+  ,"backgroundPositionX":{"info":"http://htmlbook.ru/css/background-position-x","variant":[ "left","center","right","10%","30"]}
+  ,"backgroundPositionY":{"info":"http://htmlbook.ru/css/background-position-y","variant":[ "left","center","right","10%","30"]}
+  ,"backgroundSize: ":{"info":"http://htmlbook.ru/css/background-size","variant":[ "cover","contain","auto","20%","30"]}
+
+
+  ,"borderLeft: ":{"info":"http://htmlbook.ru/css/border-left","variant":[ " 1px solid black "," 1px double #fc3 "," 3px double rgb(100,200,50) " ]}
+  ,"borderLeftColor: ":{"info":"http://htmlbook.ru/css/border-left-color","variant":[ "#ffffff","rgba(200,200,200,0.7)","rgb(100,100,100)","black","silver","gray","white","maroon","red","purple","fuchsia","green","lime","olive","yellow","navy","blue","teal","aqua","aliceblue","antiquewhite","aquamarine"]}
+  ,"borderLeftLeftRadius: ":{"info":"http://htmlbook.ru/css/border-left-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderLeftRightRadius: ":{"info":"http://htmlbook.ru/css/border-left-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderLeftStyle: ":{"info":"http://htmlbook.ru/css/border-left-style","variant":[ "none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset","inherit"]}
+
+  ,"borderRight: ":{"info":"http://htmlbook.ru/css/border-right","variant":[ " 1px solid black "," 1px double #fc3 "," 3px double rgb(100,200,50) " ]}
+  ,"borderRightColor: ":{"info":"http://htmlbook.ru/css/border-right-color","variant":[ "#ffffff","rgba(200,200,200,0.7)","rgb(100,100,100)","black","silver","gray","white","maroon","red","purple","fuchsia","green","lime","olive","yellow","navy","blue","teal","aqua","aliceblue","antiquewhite","aquamarine"]}
+  ,"borderRightLeftRadius: ":{"info":"http://htmlbook.ru/css/border-right-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderRightRightRadius: ":{"info":"http://htmlbook.ru/css/border-right-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderRightStyle: ":{"info":"http://htmlbook.ru/css/border-right-style","variant":[ "none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset","inherit"]}
+
+  ,"borderTop: ":{"info":"http://htmlbook.ru/css/border-top","variant":[ " 1px solid black "," 1px double #fc3 "," 3px double rgb(100,200,50) " ]}
+  ,"borderTopColor: ":{"info":"http://htmlbook.ru/css/border-top-color","variant":[ "#ffffff","rgba(200,200,200,0.7)","rgb(100,100,100)","black","silver","gray","white","maroon","red","purple","fuchsia","green","lime","olive","yellow","navy","blue","teal","aqua","aliceblue","antiquewhite","aquamarine"]}
+  ,"borderTopLeftRadius: ":{"info":"http://htmlbook.ru/css/border-top-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderTopRightRadius: ":{"info":"http://htmlbook.ru/css/border-top-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderTopStyle: ":{"info":"http://htmlbook.ru/css/border-top-style","variant":[ "none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset","inherit"]}
+
+  ,"borderBottom: ":{"info":"http://htmlbook.ru/css/border-bottom","variant":[ " 1px solid black "," 1px double #fc3 "," 3px double rgb(100,200,50) " ]}
+  ,"borderBottomColor: ":{"info":"http://htmlbook.ru/css/border-bottom-color","variant":[ "#ffffff","rgba(200,200,200,0.7)","rgb(100,100,100)","black","silver","gray","white","maroon","red","purple","fuchsia","green","lime","olive","yellow","navy","blue","teal","aqua","aliceblue","antiquewhite","aquamarine"]}
+  ,"borderBottomLeftRadius: ":{"info":"http://htmlbook.ru/css/border-bottom-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderBottomRightRadius: ":{"info":"http://htmlbook.ru/css/border-bottom-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderBottomStyle: ":{"info":"http://htmlbook.ru/css/border-bottom-style","variant":[ "none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset","inherit"]}
+
+  ,"border: ":{"info":"http://htmlbook.ru/css/border","variant":[ " 1px solid black "," 1px double #fc3 "," 3px double rgb(100,200,50) " ]}
+  ,"borderColor: ":{"info":"http://htmlbook.ru/css/border-color","variant":[ "#ffffff","rgba(200,200,200,0.7)","rgb(100,100,100)","black","silver","gray","white","maroon","red","purple","fuchsia","green","lime","olive","yellow","navy","blue","teal","aqua","aliceblue","antiquewhite","aquamarine"]}
+  ,"borderLeftRadius: ":{"info":"http://htmlbook.ru/css/border-radius","variant":[ "20px","70px 40px" ]}
+  ,"borderRightRadius: ":{"info":"http://htmlbook.ru/css/border--radius","variant":[ "20px","70px 40px" ]}
+  ,"borderStyle: ":{"info":"http://htmlbook.ru/css/border-style","variant":[ "none","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset","inherit"]}
+
+
+  ,"borderCollapse: ":{"info":"http://htmlbook.ru/index.php/css/border-collapse","variant":[ "collapse","separate","inherit" ]}
+  ,"borderImage: ":{"info":"http://htmlbook.ru/css/border-image","variant":[ "url(images/bg-image.png) 30 round round;"]}
+  ,"boxShadow: ":{"info":"http://htmlbook.ru/css/box-shadow","variant":[ "none","10px 10px","0 0 10px rgba(0,0,0,0.5)"]}
+  ,"boxSizing: ":{"info":"http://htmlbook.ru/css/box-sizing","variant":["content-box","border-box","padding-box","inherit"]}
+  ,"captionSide: ":{"info":"http://htmlbook.ru/css/caption-side","variant":["top","bottom","left","right"]}
+  ,"clear: ":{"info":"http://htmlbook.ru/css/clear","variant":["none","left","right","both","inherit"]}
+
+}
+
+

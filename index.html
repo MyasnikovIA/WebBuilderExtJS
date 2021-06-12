@@ -31,6 +31,8 @@
         var clientHeight = document.documentElement.clientHeight;
         var clientWidth = document.documentElement.clientWidth;
         var componentListJson = getJsonUrl('component.json');
+        var styleHtmlJson = getJsonUrl('style_html.json');
+
         var tagInfoList = {};
         var structToArr = function(componentListJson, tagInfoList) {
             for (var key in componentListJson) {
@@ -1288,12 +1290,29 @@
                     if (srctxtStyle.length > 0) {
                         if (key.toLowerCase().indexOf(srctxtStyle) == -1) continue;
                     }
+                    if ((parseInt(key)+"") !== 'NaN') continue;
                     var val = selectElement.style[key];
                     optst.push("<tr><td>");
                     optst.push(key);
                     optst.push("</td><td>");
                     if (typeof selectElement.style[key] == "string") {
-                        optst.push(`  <input propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text" />`);
+                        // styleHtmlJson
+                        optst.push(`<datalist id="LIST-${key}" value="${val}">`);
+                        optst.push(`<option value="null" />`);
+                        optst.push(`<option value="" />`);
+                        var infoIRL="";
+                        if (styleHtmlJson[key]) {
+                            if ((styleHtmlJson[key]['info']) && (styleHtmlJson[key]['info'].length > 0)) {
+                               infoIRL = `<button onclick=' window.open("${styleHtmlJson[key]['info']}"); '  title="info style property" >I</button>`;
+                            }
+                            var list = styleHtmlJson[key]["variant"];
+                            for(var ind in list){
+                               optst.push(`<option value="${list[ind]}" />`);
+                            }
+                        }
+                        optst.push(`</datalist>`);
+                        optst.push(`<input list="LIST-${key}" style='width:70%'  id="EditStyleProperty${key}" propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text"  /><button onclick=" document.getElementById('EditStyleProperty${key}').value=''; ">X</button> ${infoIRL}`);
+                        // optst.push(`  <input propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text" />`);
                     }
                     optst.push("</td></tr>");
                 }
@@ -1325,7 +1344,7 @@
                                 opt.push(`<option value="${typ[subInd]}" />`);
                             }
                             opt.push(`</datalist>`);
-                            opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
+                            opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  " title="clear user property" >X</button> `);
                         }
                         opt.push("</td>");
                         opt.push("</tr>");
@@ -1420,7 +1439,7 @@
                         opt.push(`<option value="null" />`);
                         opt.push(`<option value="" />`);
                         opt.push(`</datalist>`);
-                        opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value='';  ">X</button> `);
+                        opt.push(`<input list="LIST-${ind}" style='width:80%'  id="EditProperty${ind}" propname="${ind}" value="${val}" onchange="changeElementVal(this)" type="text"  /><button onclick=" document.getElementById('EditProperty${ind}').value=''; " title="clear property">X</button> `);
                     }
                     if (typ == "number") {
                         opt.push(`  <input propname="${ind}"  style='width:94%'  value="${val}" onchange="changeElementVal(this)" type="number" />`);
