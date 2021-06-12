@@ -1295,25 +1295,21 @@
                     optst.push("<tr><td>");
                     optst.push(key);
                     optst.push("</td><td>");
-                    if (typeof selectElement.style[key] == "string") {
-                        // styleHtmlJson
-                        optst.push(`<datalist id="LIST-${key}" value="${val}">`);
-                        optst.push(`<option value="null" />`);
-                        optst.push(`<option value="" />`);
-                        var infoIRL="";
-                        if (styleHtmlJson[key]) {
-                            if ((styleHtmlJson[key]['info']) && (styleHtmlJson[key]['info'].length > 0)) {
-                               infoIRL = `<button onclick=' window.open("${styleHtmlJson[key]['info']}"); '  title="info style property" >I</button>`;
-                            }
-                            var list = styleHtmlJson[key]["variant"];
-                            for(var ind in list){
-                               optst.push(`<option value="${list[ind]}" />`);
-                            }
+                    optst.push(`<datalist id="LIST-${key}" value="${val}">`);
+                    optst.push(`<option value="null" />`);
+                    optst.push(`<option value="" />`);
+                    var infoIRL="";
+                    if (styleHtmlJson[key]) {
+                        if ((styleHtmlJson[key]['info']) && (styleHtmlJson[key]['info'].length > 0)) {
+                           infoIRL = `<button onclick=' window.open("${styleHtmlJson[key]['info']}"); '  title="info style property" >I</button>`;
                         }
-                        optst.push(`</datalist>`);
-                        optst.push(`<input list="LIST-${key}" style='width:70%'  id="EditStyleProperty${key}" propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text"  /><button onclick=" document.getElementById('EditStyleProperty${key}').value=''; ">X</button> ${infoIRL}`);
-                        // optst.push(`  <input propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text" />`);
+                        var list = styleHtmlJson[key]["variant"];
+                        for(var ind in list){
+                           optst.push(`<option value="${list[ind]}" />`);
+                        }
                     }
+                    optst.push(`</datalist>`);
+                    optst.push(`<input list="LIST-${key}" style='width:70%'  id="EditStyleProperty${key}" propname="${key}" value="${val}" onchange="changeElementStyleVal(this)" type="text"  /><button onclick=" document.getElementById('EditStyleProperty${key}').value=''; ">X</button> ${infoIRL}`);
                     optst.push("</td></tr>");
                 }
                 optst.push("</table>");
