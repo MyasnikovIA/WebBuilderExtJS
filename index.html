@@ -1155,8 +1155,8 @@
                     newWin = window.open('editWin.html', 'example', 'location=1,status=1,scrollbars=1,width=1200,height=600,left=320,top=240');
                     newWin.onload = function() {
                         var textEdit = newWin.document.getElementById("contentText");
-                        var TmpSelectElement = selectElement.cloneNode(true);
-                        textEdit.innerHTML = html_beautify( clearSystemTextFromEditContent(TmpSelectElement.outerHTML) )
+                        // var TmpSelectElement = selectElement.cloneNode(true);
+                        textEdit.innerHTML = html_beautify( clearSystemTextFromEditContent(selectElement.outerHTML) )
                         bodyText = textEdit.innerHTML.replaceAll('\r', '\r\n');
                         newWin.document.getElementById("btnSave").onclick = function() {
                             selectElement.outerHTML = newWin.document.getElementById("contentText").value;
