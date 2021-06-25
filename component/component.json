@@ -32,9 +32,8 @@
         "tagName": "div",
         "style": {
           "position": "absolute",
-          "left": 10,
-          "left": 10,
-          "top": 10,
+          "left": "10px",
+          "top": "10px",
           "width": "100px",
           "height": "20px"
         },
@@ -44,12 +43,31 @@
       },
       {
         "leaf": true,
-        "text": "Border Block",
+        "text": "Border Block(fontSize 10px) ",
         "tagName": "div",
         "style": {
           "position": "absolute",
-          "left": 10,
-          "top": 10,
+          "left": "10px",
+          "top": "10px",
+          "width": "100px",
+          "height": "20px",
+          "border": "1px ridge black",
+          "textAlign":"center",
+          "fontSize": "10px"
+        },
+        "property": {},
+        "class": [],
+        "innerHtmlToCaption": false,
+        "innerHTML": "Border_Block"
+      },
+      {
+        "leaf": true,
+        "text": "Border Block(class)",
+        "tagName": "div",
+        "style": {
+          "position": "absolute",
+          "left": "10px",
+          "top": "10px",
           "width": "100px",
           "height": "20px"
         },
@@ -66,8 +84,8 @@
         "tagName": "div",
         "style": {
           "position": "absolute",
-          "left": 10,
-          "top": 10,
+          "left": "10px",
+          "top": "10px",
           "width": "100px",
           "height": "20px"
         },

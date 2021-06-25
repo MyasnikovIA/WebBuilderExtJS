@@ -1,3 +1,23 @@
+
+
+.your_css_class {
+    background-image: url('img/Button.png')
+}
+
+.reportsIcon {
+    background-image: url('img/components/report.bmp');
+}
+.deleteIcon {
+    background-image: url('img/components/delete.png');
+}
+.fontIcon {
+    background-image: url('img/components/font.png');
+}
+.dataBaseIcon {
+    background-image: url('img/components/database.png');
+}
+
+
 .selectElement{
    border: 1px dotted;
    border: 1px dotted;

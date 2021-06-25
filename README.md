@@ -16,7 +16,7 @@ beautify-web
 
 
 
-<img src="https://raw.githubusercontent.com/MyasnikovIA/WebBuilderExtJS/main/img/blockMove.png"/><br/>
+<img src="https://raw.githubusercontent.com/MyasnikovIA/WebBuilderExtJS/main/component/img/blockMove.png"/><br/>
 Компоненты из этой группы можно перемещать курсором (10px)
 <br/>Если зажать Shift+Курсор, то размер будет меняться
 <br/>Если зажать Ctrl+Курсор , то блок  перемещается  по 1px
