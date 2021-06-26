@@ -369,12 +369,12 @@
         customElements.define('cmp-data-set', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                    if (!this.shadow) {
                         this.shadow = this.attachShadow({mode: 'open'});
-                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
+
                    }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "DS_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpAction = document.createElement('template');
@@ -397,12 +397,11 @@
         customElements.define('cmp-action-var', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                  if (!this.shadow) {
                     this.shadow = this.attachShadow({mode: 'open'});
-                    if (!this.getAttribute('value')) {this.setAttribute('value',""); }
                  }
                  if (!this.getAttribute('srctype')) {this.setAttribute('srctype',"var"); }
                  if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_VAR_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
@@ -421,12 +420,11 @@
         customElements.define('cmp-action', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                    if (!this.shadow) {
                         this.shadow = this.attachShadow({mode: 'open'});
-                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
                    }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "ACTION_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpAction = document.createElement('template');
@@ -449,12 +447,11 @@
 
             shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                    if (!this.shadow) {
                         this.shadow = this.attachShadow({mode: 'open'});
-                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
                    }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpAction = document.createElement('template');
@@ -476,12 +473,11 @@
         customElements.define('cmp-auto-popup-menu', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                    if (!this.shadow) {
                         this.shadow = this.attachShadow({mode: 'open'});
-                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
                    }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_AUTO_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpPopUp = document.createElement('template');
@@ -503,12 +499,11 @@
         customElements.define('cmp-popup-item', class extends HTMLElement {
               shadow = null;
               static get observedAttributes() {
-                return ['width','name', 'data','value'];
+                return ['width','name', 'data'];
               }
               render() {
                    if (!this.shadow) {
                         this.shadow = this.attachShadow({mode: 'open'});
-                        if (!this.getAttribute('value')) {this.setAttribute('value',""); }
                    }
                 if (!this.getAttribute('name')) {this.setAttribute('name', "POPUP_AUTO_"+getRandomInt(999999)+(new Date().getMilliseconds()) ); }
                 var tmpPopUpItemVar = document.createElement('template');
