@@ -34,12 +34,12 @@
                 }
                 var clearbutton="";
                 if ((this.getAttribute('clearbutton'))&&(this.getAttribute("clearbutton") == 'true')) {
-                   clearbutton="<button>X</button>";
+                   clearbutton="<button style='display:inline;'>X</button>";
                 }
-                var styleTxt = [];
+                var styleTxt = ["display:inline"];
                 if (this.getAttribute('width')) { styleTxt.push('width:'+this.getAttribute('width')); }else{ styleTxt.push('width:100px ') }
                 styleTxt = styleTxt.join(";");
-                this.shadow.innerHTML = `<div><input type="text"  value="${this.getAttribute('value')}"  style='${styleTxt}' /><button>...</button>${clearbutton}</div>`;
+                this.shadow.innerHTML = `<div style='display:inline;'><input type="text"  value="${this.getAttribute('value')}"  style='${styleTxt}' /><button style="display:inline;">...</button>${clearbutton}</div>`;
              }
              connectedCallback() {
                 this.render();
