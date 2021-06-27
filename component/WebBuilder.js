@@ -888,13 +888,63 @@
                             */
                         ]
                 });
-               var treeDom = Ext.create('Ext.tree.Panel', {
+                function insertAfter(newElement, referenceElement) {
+                    referenceElement.parentNode.insertBefore(newElement, referenceElement.nextSibling);
+                }
+                var treeDom = Ext.create('Ext.tree.Panel', {
                     id: 'domTreeView',
                     region: 'center',
                     rootVisible: false,
                     store: domHTMLTreeStory,
+                    viewConfig: {
+                         plugins: {
+                             ptype: 'treeviewdragdrop',
+                             dragText: 'Drag and drop to reorganize',
+                         },
+                         listeners: {
+                           beforeDrop: function(node, data, overModel, dropPosition, dropHandler, eOpts) {
+                                 //  отмена переноса (добавить проверку родителя)
+                                 //     dropHandler.wait = true;
+                                 //    Ext.MessageBox.confirm('Drop', 'Are you sure', function(btn){
+                                 //    if (btn === 'yes') {
+                                 //        dropHandler.processDrop();
+                                 //    } else {
+                                 //       dropHandler.cancelDrop();
+                                 //   }
+                                 // });
+                                 if (dropPosition == "append"){ // пееносим в ролителя (добавляем в конец как ребенка)
+                                     var target = data.records[0].data.ObjectElement.cloneNode(true);
+                                     overModel.data.ObjectElement.appendChild(target);
+                                     data.records[0].data.ObjectElement.remove();
+                                 }
+                                 if (dropPosition == "after"){ // пееносим в ролителя (добавляем в конец как ребенка)
+                                     var target = data.records[0].data.ObjectElement.cloneNode(true);
+                                     overModel.data.ObjectElemen.insertAdjacentHTML("afterEnd",target.outerHTML)
+                                     data.records[0].data.ObjectElement.remove();
+                                 }
+                                 if (dropPosition == "before"){ // пееносим в ролителя (добавляем в конец как ребенка)
+                                     var target = data.records[0].data.ObjectElement.cloneNode(true);
+                                     overModel.data.ObjectElement.parentNode.insertBefore(target, overModel.data.ObjectElement );
+                                     data.records[0].data.ObjectElement.remove();
+                                 }
+                                 return true;
+                            },
+                            drop: function(node, data, dropRec, dropPosition) {
+                              //   var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
+                              //   console.log('================');
+                               //  console.log('Event:drop');
+                                // console.log('node',node);
+                              //   console.log('data',data);
+                               //  console.log('dropRec',dropRec);
+                               //  console.log('dropPosition',dropPosition);
+                           }
+                         }
+                     },
                     listeners: {
-                               itemdblclick: function(tree, record, item, index, e, options) {
+                                drop: function (node, data, overModel, dropPosition) {
+                                      alert('CHANGE');
+                                },
+                                itemdblclick: function(tree, record, item, index, e, options) {
                                           var nodeText = record.data.text;
                                           clickElement = record.data.ObjectElement;
                                           selectElement = record.data.ObjectElement;
@@ -960,6 +1010,18 @@
                         detailEl.hide().update(Ext.getDom(record.getId() + '-details').innerHTML).slideIn('l', {stopAnimation:true,duration: 200});
                     }
                 });
+                 treeDom.on('beforedrop', function(node, data, overModel, dropPosition, dropHandlers) {
+                    // Defer the handling
+                    dropHandlers.wait = true;
+                    Ext.MessageBox.confirm('Drop', 'Are you sure', function(btn){
+                        if (btn === 'yes') {
+                            dropHandlers.processDrop();
+                        } else {
+                            dropHandlers.cancelDrop();
+                        }
+                    });
+                });
+
                 testParentTag = function(selectElement, NewObjectElement) {
                     // информация о компоненте
                     var keyTag = NewObjectElement.tagName.toLowerCase();
@@ -989,6 +1051,7 @@
                             autoScroll: true,
                             padding: 5,
                             layout: 'border',
+
                             items: [treeDom,
                                         {
                                           region:'north',
