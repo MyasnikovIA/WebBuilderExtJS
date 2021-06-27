@@ -919,7 +919,7 @@
                                  }
                                  if (dropPosition == "after"){ // пееносим в ролителя (добавляем в конец как ребенка)
                                      var target = data.records[0].data.ObjectElement.cloneNode(true);
-                                     overModel.data.ObjectElemen.insertAdjacentHTML("afterEnd",target.outerHTML)
+                                     overModel.data.ObjectElemen.parentNode.insertBefore(target, overModel.data.ObjectElemen.nextSibling);
                                      data.records[0].data.ObjectElement.remove();
                                  }
                                  if (dropPosition == "before"){ // пееносим в ролителя (добавляем в конец как ребенка)
