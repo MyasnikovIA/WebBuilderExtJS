@@ -888,9 +888,6 @@
                             */
                         ]
                 });
-                function insertAfter(newElement, referenceElement) {
-                    referenceElement.parentNode.insertBefore(newElement, referenceElement.nextSibling);
-                }
                 var treeDom = Ext.create('Ext.tree.Panel', {
                     id: 'domTreeView',
                     region: 'center',
@@ -918,25 +915,16 @@
                                      data.records[0].data.ObjectElement.remove();
                                  }
                                  if (dropPosition == "after"){ // пееносим в ролителя (добавляем в конец как ребенка)
-                                     var target = data.records[0].data.ObjectElement.cloneNode(true);
-                                     overModel.data.ObjectElemen.parentNode.insertBefore(target, overModel.data.ObjectElemen.nextSibling);
+                                     overModel.data.ObjectElement.insertAdjacentHTML('afterEnd', data.records[0].data.ObjectElement.outerHTML);
                                      data.records[0].data.ObjectElement.remove();
                                  }
                                  if (dropPosition == "before"){ // пееносим в ролителя (добавляем в конец как ребенка)
-                                     var target = data.records[0].data.ObjectElement.cloneNode(true);
-                                     overModel.data.ObjectElement.parentNode.insertBefore(target, overModel.data.ObjectElement );
+                                     overModel.data.ObjectElement.insertAdjacentHTML('beforeBegin', data.records[0].data.ObjectElement.outerHTML)
                                      data.records[0].data.ObjectElement.remove();
                                  }
                                  return true;
-                            },
-                            drop: function(node, data, dropRec, dropPosition) {
-                              //   var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
-                              //   console.log('================');
-                               //  console.log('Event:drop');
-                                // console.log('node',node);
-                              //   console.log('data',data);
-                               //  console.log('dropRec',dropRec);
-                               //  console.log('dropPosition',dropPosition);
+                           },
+                           drop: function(node, data, dropRec, dropPosition) {
                            }
                          }
                      },
