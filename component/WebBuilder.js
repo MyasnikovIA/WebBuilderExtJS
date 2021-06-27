@@ -205,6 +205,7 @@
                     return;
                 }
                 //-------------------------------------------
+                // borderVertTextElement
                 if ((event.keyCode == 37) && (event.shiftKey == false) && (selectElement != null)) { //лево
                     var left = parseInt(selectElement.style.left);
                     left -= 10;
@@ -228,24 +229,48 @@
                 }
                 //----------------------------------
                 if ((event.keyCode == 37) && (event.shiftKey == true) && (selectElement != null)) { //лево
-                    var width = parseInt(selectElement.style.width);
-                    width -= 1;
-                    selectElement.style.width = width + 'px';
+                    if ( selectElement.getAttribute("class").indexOf("borderVertTextElement") == -1 ){
+                        var width = parseInt(selectElement.style.width);
+                        width -= 1;
+                        selectElement.style.width = width + 'px';
+                    } else {
+                        var height = parseInt(selectElement.style.height);
+                        height -= 1;
+                        selectElement.style.height = height + 'px';
+                    }
                 }
                 if ((event.keyCode == 39) && (event.shiftKey == true) && (selectElement != null)) { //права
-                    var width = parseInt(selectElement.style.width);
-                    width += 1;
-                    selectElement.style.width = width + 'px';
+                    if ( selectElement.getAttribute("class").indexOf("borderVertTextElement") == -1 ){
+                        var width = parseInt(selectElement.style.width);
+                        width += 1;
+                        selectElement.style.width = width + 'px';
+                    } else {
+                        var height = parseInt(selectElement.style.height);
+                        height += 1;
+                        selectElement.style.height = height + 'px';
+                    }
                 }
                 if ((event.keyCode == 38) && (event.shiftKey == true) && (selectElement != null)) { //верх
-                    var height = parseInt(selectElement.style.height);
-                    height -= 1;
-                    selectElement.style.height = height + 'px';
+                    if ( selectElement.getAttribute("class").indexOf("borderVertTextElement") == -1 ){
+                        var height = parseInt(selectElement.style.height);
+                        height -= 1;
+                        selectElement.style.height = height + 'px';
+                    } else {
+                        var width = parseInt(selectElement.style.width);
+                        width += 1;
+                        selectElement.style.width = width + 'px';
+                    }
                 }
                 if ((event.keyCode == 40) && (event.shiftKey == true) && (selectElement != null)) { //низ
-                    var height = parseInt(selectElement.style.height);
-                    height += 1;
-                    selectElement.style.height = height + 'px';
+                    if ( selectElement.getAttribute("class").indexOf("borderVertTextElement") == -1 ){
+                        var height = parseInt(selectElement.style.height);
+                        height += 1;
+                        selectElement.style.height = height + 'px';
+                    } else {
+                        var width = parseInt(selectElement.style.width);
+                        width -= 1;
+                        selectElement.style.width = width + 'px';
+                    }
                 }
                 //---------------------------------------
                 // for (var property in event) {
