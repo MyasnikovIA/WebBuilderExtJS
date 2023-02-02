@@ -554,7 +554,7 @@
                         opt.push("<tr><td>");
                         opt.push(ind);
                         opt.push("</td><td>");
-                        opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementСlassList(this)" type="text" />`);
+                        opt.push(`  <input propname="${ind}" value="${val}" onchange="changeElementClassList(this)" type="text" />`);
                         opt.push("</td></tr>");
                         continue;
                     }
@@ -622,8 +622,7 @@
                     selectElement.style[nam] = el.value;
                 }
             }
-
-            changeElementСlassList = function(el) { // функция изменения  свойства элемента
+            changeElementClassList = function(el) { // функция изменения  свойства элемента
                 if ((selectElement == undefined) || (selectElement == null)) return;
                 var nam = el.getAttribute("propname");
                 if (el.value === 'null') {
